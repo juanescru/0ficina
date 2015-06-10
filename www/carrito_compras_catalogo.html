@@ -13,26 +13,32 @@
 
         <title>Carrito de compras</title>
         <script type="text/javascript" src="js/connect.js">
-            //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
+            //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
         </script>
 
         <script type="text/javascript">
             window.addEventListener('load',function() {
                 /////////////////////////////////////////////////
-                /******** Llena combobox de Artículos *********/
-                queryData('USP_VBC_GET_ITEM_CATALOG', ['integer','2','integer','1', 'integer','12'], catalog);
-                function catalog(dataSet) {
-                    var rec = dataSet[0];
-                    var text = '';
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        rec = dataSet[idx];
-                        text += '<option value="' + rec['itemGroupId'] + '">' + rec['groupName'] + '</option>' +"\n";
-                    }
-                    Debug(rec);
-                }
-                /////////////////////////////////////////////////
                 /******** Llena combobox de categorías *********/
-                queryData('USP_VBC_GET_ITEM_CATALOG', ['integer','10','integer','0', 'integer','13','integer','7','string','','integer','0','integer','0','integer','4'], categorias);
+                var cat = document.getElementById('categoria');
+                var egoria = 1;
+                cat.addEventListener('change', function(){
+                    egoria = cat.selectedIndex;
+                });
+                var argumentos = [
+                'integer', '0',
+                'integer', egoria,//categoria
+                'integer','12',
+                'integer', '7',
+                'string' ,  '',
+                'integer',  '',
+                'integer',  '',
+                'integer', '4',
+                'integer',  '',
+                'integer',  '',
+                'integer',  ''
+                ];
+                queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, categorias);
                 function categorias(dataSet) {
                     var select_categoria = document.getElementById('categoria');
                     var rec = dataSet[0];
@@ -43,6 +49,32 @@
                         options.value = rec['itemGroupId'];
                         select_categoria.options.add(options);
                     }
+                }
+                /////////////////////////////////////////////////
+                /******** Carga articulos a la tabla *********/
+                queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, listaArticulos, 2);
+                function listaArticulos(dataSet) {
+                    var articulos = document.getElementById('articulos');
+                    showWaitLoader('articulos');
+                    var rec = dataSet[0];
+                    var text = "", code = '';
+                    for(var idx = 0; idx < dataSet.length; idx++){
+                        rec = dataSet[idx];
+                        code = rec['itemCode'];
+                        text += '<tr id="TR-' +code+ '">';
+                        text += '<td id="'    +code+ '"><a href="carrito_compras_detalles.html?code=' +code+ '&price=' +
+                            rec['price']+ '">' +
+                            rec['itemCode'] + '</a></td><td id="DES-' +code+ '">' + 
+                            rec['description'] + '</td><td id="PRE-'  +code+ '">$' + 
+                            rec['price'] + '</td><td id="PUN='  +code+ '">' + 
+                            rec['itemPvDistributor'] + '</td><td id="VCO-' +code+ '">' + 
+                            rec['itemCvDistributor'] + '</td><td id="PSO-' +code+ '">' + 
+                            rec['weight'] + '</td><td id="CAN-' +code+ '">' +
+                            '<input type="number" id="TXT-'     +code+ '" placeholder="cantidad" size="7" />' +
+                            '<input type="submit" class="comprar" value="Comprar" /></td>';
+                        text += '</tr>';
+                    }
+                    articulos.innerHTML = text;
                 }
 
             });
@@ -90,31 +122,8 @@
                                 <th >Comprar</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr id="TR-AP1002">
-                                <td id="AP1002"><a href="carrito_compras_detalles.html">AP1002</a></td>
-                                <td id="DES-AP1002">Libreta logotipo REDNATURA al dos por uno</td>
-                                <td id="PRE-AP1002">$58.00</td>
-                                <td id="PUN-AP1002">0.00</td>
-                                <td id="VCO-AP1002">0.00</td>
-                                <td id="PSO-AP1002">0.00</td>
-                                <td id="CAN-AP1002">
-                                    <input type="number" id="TXT-AP1002" placeholder="cantidad" size="7" />
-                                    <input  class="comprar" type="submit" value="Comprar." />
-                                </td>
-                            </tr>
-                            <tr id="TR-AP1001">
-                                <td id="AP1001"><a href="carrito_compras_detalles.html">AP1001</a></td>
-                                <td id="DES-AP1001">Plumas logotipo REDNATURA</td>
-                                <td id="PRE-AP1001">$38.79</td>
-                                <td id="PUN-AP1001">0.00</td>
-                                <td id="VCO-AP1001">0.00</td>
-                                <td id="PSO-AP1001">0.20</td>
-                                <td id="CAN-AP1001">
-                                    <input type="number" id="TXT-AP1001" placeholder="cantidad" size="7" />
-                                    <input  class="comprar" type="submit" value="Comprar." />
-                                </td>
-                            </tr>
+                        <tbody id='articulos'>
+                            <!-- Datos desde la base -->
                         </tbody>
                     </table>
                 </div>

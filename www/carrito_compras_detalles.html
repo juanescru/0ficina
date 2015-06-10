@@ -12,8 +12,44 @@
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
 
         <title>Panel de Control</title>
+        <script type="text/javascript" src="js/connect.js">
+            //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
+        </script>
+        <script type="text/javascript">
+            window.addEventListener('load',function() {
+                ///////////////////////////////////////////////////////
+                /*************** Extrae variables GET ****************/
+                function getByURL() {
+                    var url = location.search.replace("?", "");
+                    var arrUrl = url.split("&");
+                    var urlObject = {};
+                    for (var i = 0; i<arrUrl.length; i++) {
+                        var x= arrUrl[i].split("=");
+                        urlObject[x[0]]=x[1];
+                    }
+                    return urlObject;
+                }
 
+                ///////////////////////////////////////////////////////
+                /****** Llena tabla con detalles del producto ********/
+                queryData('USP_VBC_GET_ITEMS_DETAIL', ['string',getByURL()['code'],'integer','','integer','4'], detail);
+                function detail(dataSet) {
+                    var rec = dataSet[0];
+                    var img = '';
+                    img = rec['itemPicture']?'<img src="' +domain+ '/image/' +rec['itemPicture']+ '" />':'<p>Imágen no disponible</p>';
+                    set('codigo',rec['itemCode']);
+                    set('puntos',rec['bv']);
+                    set('vconsumible',rec['cv']);
+                    set('precio','$'+getByURL()['price']);
+                    set('descripcion',rec['itemName']);
+                    set('imagen', img);
 
+                    function set(id, html) {
+                        document.getElementById(id).innerHTML = html;
+                    }
+                }
+            });
+        </script>
     </head>
     <body>
         <div>
@@ -29,23 +65,38 @@
                 <!-- ***************************************************** -->
                 <!-- ***************************************************** -->
                 <div id="detalles">
-                    <a href="#" onClick="javascript:history.back()">Regresar</a>
-                    <table cellspacing="0">
+                    <a href="#" onClick="Href('carrito_compras_catalogo.html')">Regresar</a>
+                    <table>
                         <thead>
-                            <tr class="ui-bar-a">
-                                <th >BELIM GEL (Tarro con 300g.)</th>
-                            </tr>
+                            <th>Código</th>
+                            <th>Puntos</th>
+                            <th>V. Consumible</th>
+                            <th>Precio</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><img src="img/BE0345.jpg" /></td>
+                                <td id="codigo"><!-- desde la base --></td>
+                                <td id="puntos"><!-- desde la base --></td>
+                                <td id="vconsumible"><!-- desde la base --></td>
+                                <td id="precio"><!-- desde la base --></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table cellspacing="0">
+                        <thead>
+                                <th id="descripcion"><!-- desde la base --></th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="imagen"><!-- desde la base --></td>
+                            </tr>
+                            <!--tr>
+                                <td style="text-align: left">Cómo usarlo: <span id="comoUsarlo">< desde la base ></span></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left">Cómo usarlo: </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left">Ingredientes</td>
-                            </tr>
+                                <td style="text-align: left">Ingredientes: <span id="ingredientes">< desde la base ></span></td>
+                            </tr-->
                         </tbody>
                     </table>                    
                 </div>

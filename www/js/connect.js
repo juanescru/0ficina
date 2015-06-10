@@ -114,11 +114,12 @@
 // Las siguientes lineas hacen uso de la clase WSCall() para obtener el dataSet        //
 //=====================================================================================//
     //function queryData(){
-    function queryData(storedProcedure, parameters, method){
+    var domain = "http://mexrednatura.vbc-for-mlm.com";
+    function queryData(storedProcedure, parameters, method, tableSet){
         // Se crea la instancia del componente WSCAll, se proporciona el SOAP EndPoint 
         // y una funcion de CallBack que será ejecutada al regresar la respuesta del servidor
         //var soap = new WSCall('http://movil.vbc-for-mlm.com/rs_app_endpoint.asp', function(text){
-        var soap = new WSCall('http://mexrednatura.vbc-for-mlm.com/rs_app_endpoint.asp', function(text){
+        var soap = new WSCall(domain+'/rs_app_endpoint.asp', function(text){
             // En este punto, el servidor ha regresado su respuesta y si esta fue exitosa
             // existirá una proppiedad llamada responseXML que contendra la respuesta SOAP
             // Obtenemos el dataSet JSON de la respuesta
@@ -129,7 +130,22 @@
                     // Convertimos el stream json a una variable javascript 
                     var json = eval('('+soap.responseXML.getElementsByTagName('dataSet')[0].childNodes[0].nodeValue+')');
                     //TODO:Implementar el codigo propio de la aplicación
-                    method(json.dataSet);
+                    
+                    switch(tableSet){
+                        case 1:
+                            method(json.dataSet1);
+                            break;
+                        case 2:
+                            method(json.dataSet2);
+                            break;
+                        case 3:
+                            method(json.dataSet3);
+                            break;
+                        default:
+                            method(json.dataSet);
+                            break;
+                    }
+
                 } else {
                     //TODO:Implementar el codigo propio de la aplicación
                     alert(resp.getAttribute('message'));

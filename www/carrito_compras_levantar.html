@@ -30,8 +30,6 @@
                         options.value = rec['warehouseId'];
                         sucursal.options.add(options);
                     }
-                    var spans = document.querySelector('#tdSucursal div div span');
-                    spans.innerHTML = sucursal.options[sucursal.selectedIndex].text;
                     ocultar();
                 }
                 //////////////////////////////////////////////
@@ -47,8 +45,6 @@
                         options.value = rec['carrierId'];
                         paqueteria.options.add(options);
                     }
-                    var spans = document.querySelector('#tdPaqueteria div div span');
-                    spans.innerHTML = paqueteria.options[paqueteria.selectedIndex].text;
                 }
                 //////////////////////////////////////////////////
                 /****** Llena combobox de formas de pago ********/
@@ -63,8 +59,6 @@
                         options.value = rec['payMethodId'];
                         forma_pago.options.add(options);
                     }
-                    var spans = document.querySelector('#tdForma-pago div div span');
-                    spans.innerHTML = forma_pago.options[forma_pago.selectedIndex].text;
                 }
                 ///////////////////////////////////////////////////
                 /******* Llena combobox de metodo de envío *******/
@@ -79,25 +73,19 @@
                         options.value = rec['shipMethodId'];
                         metodo_envio.options.add(options);
                     }
-                    var spans = document.querySelector('#tdMetodo-envio div div span');
-                    spans.innerHTML = metodo_envio.options[metodo_envio.selectedIndex].text;
                     //Muestra si hay datos guardados
                     if (window.localStorage.getItem('carrito_levantar')) {
                         //extrae datos almacenados y los convierte en array
                         var extraer = localStorage.getItem('carrito_levantar');
                         var resArray = extraer.split('","');
                         document.getElementById('metodo-envio').value = resArray[0];
-                        document.querySelector('#tdMetodo-envio span').innerHTML = document.getElementById('metodo-envio').options[document.getElementById('metodo-envio').selectedIndex].text;
                         if (resArray[0] == 2) {
                             document.getElementById('paqueteria').value = resArray[1];
-                            document.querySelector('#tdPaqueteria span').innerHTML = document.getElementById('paqueteria').options[document.getElementById('paqueteria').selectedIndex].text;
                         }
                         else {
                             document.getElementById('sucursal').value = resArray[1];
-                            document.querySelector('#tdSucursal span').innerHTML = document.getElementById('sucursal').options[document.getElementById('sucursal').selectedIndex].text;
                         }
                         document.getElementById('forma-pago').value = resArray[2];
-                        document.querySelector('#tdForma-pago span').innerHTML = document.getElementById('forma-pago').options[document.getElementById('forma-pago').selectedIndex].text;
                     }
                     ocultar();
                 }//Termina función
