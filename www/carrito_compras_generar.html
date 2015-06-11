@@ -11,14 +11,24 @@
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
         <title>Levantar pedido</title>
+        <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
         </script>
         <script type="text/javascript">
             window.addEventListener('load',function() {
+                /////////////////////////////////////////////////////
+                /************* Calcula Costo de envío **************/
+                var xml = '<PAGE><CART GRAN_TOTAL_ITEM_WEIGHT="11.5" COUNTRY_ID="4"/><SHIPPING_ADDRES SHIPPING_METHOD="2" CARRIER="3"/></PAGE>';
+                queryData('USP_VBC_GET_SHIPPING_COST', ['string',depurarXML(xml)], calculaEnvio);
+                function calculaEnvio(dataSet) {
+                    var rec = dataSet[0];
+                    document.getElementById('cargo_manejo').innerHTML = '$' +rec['shippingCharge'];
+                }
+
                 //////////////////////////////////////////////////////
                 /******* Llena combobox de Centro Autorizado ********/
-                /*queryData('USP_VBC_GET_USER_PROFILE_DATA', ['integer','12'], profileData);
+                queryData('USP_VBC_GET_USER_PROFILE_DATA', ['integer','12'], profileData);
                 function profileData(dataSet) {
                     showWaitLoader('dataSet');
                     var rec = dataSet[0];
@@ -50,13 +60,6 @@
                     }
                     tabla += '</table>';
                     document.getElementById('dataSet').innerHTML = tabla;
-                }*/
-                /////////////////////////////////////////////////////
-                /************* Calcula Costo de envío **************/
-                queryData('USP_VBC_GET_SHIPPING_COST_SIMPLE', ['float','15','integer','2','string','COL'], calculaEnvio);
-                function calculaEnvio(dataSet) {
-                    var rec = dataSet[0];
-                    //Debug(rec);
                 }
             });
 
@@ -64,7 +67,7 @@
 
     </head>
     <body>
-        <div data-theme="a" id="page">
+        <div id="page">
 
             <div>
                 <h1>Levantar pedido</h1>
@@ -85,7 +88,7 @@
                         </tr>
                         <tr>
                             <td class="descrip">Cargo por Manejo:</td>
-                            <td id="cargo_manejo">--</td>
+                            <td id="cargo_manejo"><!-- Desde la base --></td>
                         </tr>
                         <tr>
                             <td class="descrip">Impuesto  Total:</td>

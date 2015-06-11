@@ -25,6 +25,8 @@
         },
         // Agrega un elemento al XML de la petición (no aplica para XML complejos)
         addArgument:function(name, value, dataType){this._arguments[name] = {name:name, value:value, type:(dataType||'string')};},
+        //Elimina argumentos de solicitudes ya realizadas
+        removeArgument: function() {var i = 0;for(var argName in this._arguments){delete this._arguments['arg'+i];i++;}},
         // Agrega un nameSpace a la petición
         addNameSpace:function(uri, prefix){this._nameSpaces[prefix] = uri;},
         // Agrega un valor de encabezado
@@ -137,15 +139,16 @@
                             break;
                         case 2:
                             method(json.dataSet2);
+
                             break;
                         case 3:
                             method(json.dataSet3);
+
                             break;
                         default:
                             method(json.dataSet);
                             break;
                     }
-
                 } else {
                     //TODO:Implementar el codigo propio de la aplicación
                     alert(resp.getAttribute('message'));
@@ -157,13 +160,16 @@
         // Agregamos las credenciales de acceso
         soap.addHeader('appId', 'VBCVO');
         soap.addHeader('apiKey', 'uZyA9ICJVVEYtOCI');
+        
+        //Elimina argumentos de solicitudes ya realizadas
+        soap.removeArgument();
         // Llamada SQL con sus argumentos (argName, argValue, dataType)
         soap.addArgument('sql', storedProcedure);
         var cont = 0;
         for (var i = 0; i < parameters.length; i++) {
             soap.addArgument('arg'+cont,  parameters[i+1], parameters[i]);
             i+=1;cont+=1;
-       }
+        }
         //soap.addArgument('arg0',  0, 'integer');
         // Invokamos el metodo con su namespace respectivo
         //showWaitLoader(); //Mostramos la animacion de espera....

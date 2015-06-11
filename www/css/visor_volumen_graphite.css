@@ -95,7 +95,7 @@
 }
 .graphite .dd-header h3 .dd-count {display: none;}
 .graphite .dd-wrapper {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 .clear {clear: both;}

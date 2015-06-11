@@ -14,7 +14,8 @@
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
         </script>
         <script type="text/javascript">
-            //Llena combobox de periodos
+            ///////////////////////////////////////////////////////
+            /************ Llena combobox de periodos *************/
             queryData('USP_VBC_GET_PERIODS', ['integer','1','integer','0'], periodos);
             function periodos(dataSet) {
                 var rec = dataSet[0];
@@ -28,7 +29,7 @@
                 $('#divPeriodo span').text($('#periodo option:selected').text());
             }
             //Llena tabla de visor de volumen
-            /*queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer','12','integer','0','integer','0','integer','16','integer','1'], visor);
+            queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer','12','integer','0','integer','0','integer','16','integer','1'], visor);
             function visor(dataSet) {
                 var rec = dataSet[0];
                 var recy = dataSet[0];
@@ -38,20 +39,17 @@
 
                 for(var idx = 0; idx < dataSet.length; idx++){
                     rec = dataSet[idx];
-                    como += "*";
-                    text += como;
-                    //text += '<option value="' + rec['userId'] + '">' + rec['userIdUp'] + '</option>' + "\n";
                     for(var idy = idx; idy < dataSet.length; idy++){
                         recy = dataSet[idy]
                         if (rec['userId'] == recy['userIdUp']) {
-                            text += recy['name'] + "\n";
+                            text += '<option value="' + rec['userId'] + '">' + rec['userIdUp'] + '</option>' + "\n";
                         }
                     }
                 }
                 console.log(text);
                 $('#drilldown-1').html(text);
                 //$('#divPeriodo span').text($('#periodo option:selected').text());
-            }*/
+            }
 
         </script>
     </head>
