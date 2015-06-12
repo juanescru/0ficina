@@ -12,6 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
 
         <title>Carrito de compras</title>
+        <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
         </script>
@@ -21,23 +22,37 @@
                 /////////////////////////////////////////////////
                 /******** Llena combobox de categorías *********/
                 var cat = document.getElementById('categoria');
+                //var egoria = getByURL()['categoria']==null ? getByURL()['categoria'] : 1;
                 var egoria = 1;
-                cat.addEventListener('change', function(){
-                    egoria = cat.selectedIndex;
-                });
+                var get = getByURL()['categoria'];
+                if (typeof get != "undefined" && get != '') {
+                    egoria = get;
+                    Debug(egoria);
+                }else {
+                    egoria = 1
+                }
                 var argumentos = [
                 'integer', '0',
                 'integer', egoria,//categoria
-                'integer','12',
+                'integer','12',//Usuario
                 'integer', '7',
                 'string' ,  '',
                 'integer',  '',
                 'integer',  '',
-                'integer', '4',
+                'integer', '4',//País
                 'integer',  '',
                 'integer',  '',
                 'integer',  ''
                 ];
+
+                //Carga la tabla cuando se actualiza el combobox
+                cat.addEventListener('change', function(){
+                    var opcion = cat.value;
+                    argumentos[3] = opcion;
+                    queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, listaArticulos, 2);
+                    egoria = opcion;
+                });
+
                 queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, categorias);
                 function categorias(dataSet) {
                     var select_categoria = document.getElementById('categoria');
@@ -49,6 +64,7 @@
                         options.value = rec['itemGroupId'];
                         select_categoria.options.add(options);
                     }
+                    document.getElementById('categoria').value = egoria;
                 }
                 /////////////////////////////////////////////////
                 /******** Carga articulos a la tabla *********/
@@ -62,7 +78,7 @@
                         rec = dataSet[idx];
                         code = rec['itemCode'];
                         text += '<tr id="TR-' +code+ '">';
-                        text += '<td id="'    +code+ '"><a href="carrito_compras_detalles.html?code=' +code+ '&price=' +
+                        text += '<td id="'    +code+ '"><a href="carrito_compras_detalles.html?categoria=' +egoria+ '&code=' +code+ '&price=' +
                             rec['price']+ '">' +
                             rec['itemCode'] + '</a></td><td id="DES-' +code+ '">' + 
                             rec['description'] + '</td><td id="PRE-'  +code+ '">$' + 

@@ -12,24 +12,12 @@
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
 
         <title>Panel de Control</title>
+        <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
         </script>
         <script type="text/javascript">
             window.addEventListener('load',function() {
-                ///////////////////////////////////////////////////////
-                /*************** Extrae variables GET ****************/
-                function getByURL() {
-                    var url = location.search.replace("?", "");
-                    var arrUrl = url.split("&");
-                    var urlObject = {};
-                    for (var i = 0; i<arrUrl.length; i++) {
-                        var x= arrUrl[i].split("=");
-                        urlObject[x[0]]=x[1];
-                    }
-                    return urlObject;
-                }
-
                 ///////////////////////////////////////////////////////
                 /****** Llena tabla con detalles del producto ********/
                 queryData('USP_VBC_GET_ITEMS_DETAIL', ['string',getByURL()['code'],'integer','','integer','4'], detail);
@@ -49,6 +37,9 @@
                     }
                 }
             });
+            function regresar() {
+                location.href = "carrito_compras_catalogo.html?categoria=" + getByURL()['categoria'];
+            }
         </script>
     </head>
     <body>
@@ -65,7 +56,7 @@
                 <!-- ***************************************************** -->
                 <!-- ***************************************************** -->
                 <div id="detalles">
-                    <a href="#" onClick="Href('carrito_compras_catalogo.html')">Regresar</a>
+                    <a href="#" onClick="regresar()">Regresar</a>
                     <table>
                         <thead>
                             <th>Código</th>
