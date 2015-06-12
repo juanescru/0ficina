@@ -17,8 +17,8 @@ $(function(){
 
     //Comprueba si hay variables locales definidas
     //
-    if (window.localStorage.getItem('usernameLocal') && window.localStorage.getItem('passwordLocal') 
-        && window.localStorage.getItem('regIdLocal')) {
+    if (window.localStorage.getItem('usernameLocal') && window.localStorage.getItem('userIdLocal') 
+        && window.localStorage.getItem('regIdLocal') && window.localStorage.getItem('sessionStatusLocal')) {
         //Si existen los datos del usuario almacenados localmente redirecciona a la página de inicio 
         window.setTimeout(function(){ window.location ="welcome.html";},1750);
     }
@@ -26,87 +26,66 @@ $(function(){
     //Proceso de logueo remoto
     //
     $("#saveSettings").click(function(){
+        //Valida que el SESSION_CODE esté cargado y por lo tanto el registro a GCM sea exitoso
         if (document.getElementById('regId').value != "") {
+            //Valida que los campos Usuario y Contraseña no estén vacíos
             if (document.getElementById('username').value != "" && document.getElementById('password').value != "") {
-                //Extrae Id del usuario
-                //
-                $.getJSON("http://192.168.1.66:50223/WS_funciones.asmx/obtenerUsuario?user=" + document.getElementById('username').value,function(datos) {
-                    //variables extraidas del formulario
-                    var username = document.getElementById('username').value;
-                    var password = md5(document.getElementById('password').value);
-                    var regId = document.getElementById('regId').value;
-                    //variables extraidas del servidor
-                    var idRemoto = 0;
-                    var nameRemoto;
-                    var passwordRemoto;
-                    var idUsuario;
-                    //variables otras
-                    var url = "http://192.168.1.66:50223/WS_funciones.asmx/registrarRegId"; // El script a dónde se realizará la petición.
-                    var acceso = false;
-                    //Inicia recorrido del JSON
-                    //
-                    $.each(datos, function(i, item) {
-                        if (item.Name == username) {
-                            //Si encontró algun usuario, los carga en las variables
-                            //para ser enviadas al servidor posteriormente
-                            //
-                            document.getElementById('idUsuario').value = item.IdUsuario;
-                            nameRemoto = item.Name;
-                            passwordRemoto = item.Password;
-                            acceso = true;
-                            return false;
-                        }
-                    });
-                    //En caso de que el usuario ingresado existe se procede a la validación de credenciales
-                    //
-                    if (acceso) {
-                        //En caso de que las credenciales sean correctas
-                        //se procede al registro del regId
-                        //
-                        
-                        if (username == nameRemoto && password == passwordRemoto) {
-                            //Envía formulario Vía Ajax en forma serializada
-                            $.ajax({
-                               type: "POST",
-                               url: url,
-                               data: $("#formulario").serialize(),
-                               success: function(data)
-                               {
-                                   //Si el servidor responde con Successful  1, inició mas de una vez
-                                   //Si el servidor responde con Successful 11, inició por primera vez
-                                   // 
-                                   if (data == 1 || data == 11) {
-                                        //Guarda credenciales segun elección del usuario
-                                        //
-                                        app.showNotificactionVBC("Iniciaste sesión con éxito y apartir de este momento recibirás nuestras Notificaciones");
+                //Variables extraídas del Formulario
+                var username = document.getElementById('username').value;
+                var password = document.getElementById('password').value;
+                var regId = document.getElementById('regId').value;
+                 //variables extraidas del servidor
+                var userIdRemoto;
+                var usernameRemoto;
+                var sessionStatusRemoto;
+                //variables otras                
+                var acceso = false;
 
-                                        if (document.getElementById("save").checked) {    
-                                            localStorage.setItem("usernameLocal", username);
-                                            localStorage.setItem("passwordLocal", password);
-                                            localStorage.setItem("regIdLocal", regId);
-                                            localStorage.setItem("idUsuarioLocal", document.getElementById('idUsuario').value);
-                                        }
-                                        location.href="welcome.html";
-                                   } else {
-                                        app.showNotificactionVBC('Error en el inicio de sesión, intenta de nuevo');
-                                   }
-                               }
-                            }); //Termina envio por ajax
-                        } else {
-                            app.showNotificactionVBC('Su contraseña no coincide con el Usuario');
-                            //alert('Tus datos de acceso no coindicen con la base de datos');
+                /*Si coincide con los datos enviados,  permite el inicio de sesión */
+                queryData('USP_VBC_VALIDATE_PASSWORD', ['string', username, 'string', password, 'string', '0'], validateUser);
+                //Valida el STATUS de acceso 
+                function validateUser(dataSet){
+                    var rec = dataSet[0];
+                    console.log(rec['status']);
+                    //Si el status es igual a 0 significa que el usuario y el passsword son correctos y continúa con la validación
+                    if(rec['status'] == 0){
+                        userIdRemoto = rec['custid'];
+                        usernameRemoto = rec['nickname'];
+                        sessionStatusRemoto = rec['status'];
+
+                        acceso = true;
+
+                        //Una vez que el acceso es verdadero se procede a guardar el SESSION_CODE del usuario para Notificaciones
+                        if(acceso){
+                            //Almacena el SESSION_CODE al usuario correspondiente
+                            queryData('USP_VBC_SET_MOBILE_SESSION', ['string', regId, 'integer', userIdRemoto], validateRegister);
+                            function validateRegister(dataSet){
+                                var rec = dataSet[0];
+                                //Sí el status es igual a 0 la inserción fue exitosa
+                                if(rec['status'] == 0){
+                                    //Sí el checkbox esta seleccionado se almacenan variables locales para logueo automático
+                                    if(document.getElementById('save').checked){
+                                        localStorage.setItem("usernameLocal", usernameRemoto);
+                                        localStorage.setItem("regIdLocal", regId);
+                                        localStorage.setItem("userIdLocal", userIdRemoto);
+                                        localStorage.setItem("sessionStatusLocal", sessionStatusRemoto);
+                                    }
+                                    location.href = "welcome.html";
+                                }else{
+                                    app.showNotificactionVBC('Error en el inicio de sesión, intente de nuevo');
+                                }
+                            }
                         }
-                    } else {
-                        app.showNotificactionVBC('Usuario desconocido');
-                        //alert('El usuario ingresado no existe en la base de datos');
+                    }else{
+                        app.showNotificactionVBC('Sus datos de acceso son incorrectos');
                     }
-                }); //Termina getJson
+                }                
             } else {
-                app.showNotificactionVBC('Debes llenar los campos Usuario y Contraseña');
+                app.showNotificactionVBC('Los campos Usuario y Contraseña no pueden estar vacíos');
                 //alert('Debes llenar los campos Usuario y Contraseña');
             }
         } else {
-            app.showNotificactionVBC('Esperando regId de su dispositivo para que pueda recibir Notificaciones VBC')
+            app.showNotificactionVBC('Esperando SESSION_CODE de su dispositivo para que pueda recibir Notificaciones a su Oficina Virtual Móvil')
             //alert('Esperando regId');
         }
     });
