@@ -39,6 +39,7 @@ $(document).ready(function() {
     //
     //Termina volumen móvil
 
+
     //Inscripciones
     //
     $('#btnContinuar').click(function() {
