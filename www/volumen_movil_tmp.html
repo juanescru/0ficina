@@ -6,7 +6,7 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=no">
-
+        <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">     
         <!--link href="css/visor_volumen_graphite.css" rel="stylesheet" type="text/css" /-->
         <style type="text/css">
@@ -34,6 +34,11 @@
                 var como = "";
                 var nodos = [];
                 var numNodo = 0;
+                for(var idx = 0; idx < dataSet.length; idx++){
+                    rec = dataSet[idx];
+                    text += "<li class='ocultar'><a onClick='link(this.id)' class='li" +rec['userIdUp']+ "' id='" +rec['userId']+ "' href='#'>" +rec['name']+ "</a></li><ul class='ul" +rec['userId']+ "'></ul>\n";
+                    //text = '<li><a id="' +rec['userId']+ '" href="#">' +rec['name']+ '</a></li>';
+                }
                 // for(var idx = 0; idx < dataSet.length; idx++){
                 //     rec = dataSet[idx];
                 //     if (rec['levelPosition'] == 1) {
@@ -48,25 +53,10 @@
                 //     //text += "<span class='ocultar " +rec['userIdUp']+ "'><a id='" +rec['userId']+ "' href='#'>" +rec['name']+ "</a></span>\n";
                 // }
                 
-                
-                for(var idx = 0; idx < dataSet.length; idx++){
-                    rec = dataSet[idx];
-                    text += "<li class='ocultar li" +rec['userIdUp']+ "'><a id='" +rec['userId']+ "' href='#'>" +rec['name']+ "</a></li><ul class='ul" +rec['userIdUp']+ "'></ul>\n";
-                    //text = '<li><a id="' +rec['userId']+ '" href="#">' +rec['name']+ '</a></li>';
-                }
-                
-                var graphite = document.querySelector('.graphite');
-                graphite.innerHTML = text;
+                //var graphite = document.querySelector('.graphite');
+                //graphite.innerHTML = text;
+                $('.graphite').html(text);
                 //Debug(nodos);
-                
-                var nod1 = document.querySelector('li:nth-child(1)');
-                nod1.classList.add('mostrar');
-
-                nod1.addEventListener('click', function (event){
-                    var id = event.target.id;
-                    var uladd = document.querySelector('.ul'+id);
-                    uladd.innerHTML = uladd[1].tagName;
-                });
                 
                 
                 /*$('a').click(function() {
@@ -81,9 +71,25 @@
                         $.space2.clicks = id;
                     }
                 });*/
-                
+                $('li:nth-child(1)').addClass('mostrar');
             }
+            //var nod1 = document.querySelector('li:nth-child(2)');
+            //nod1.classList.add('mostrar');
+            
+            
+            
         });
+        
+        function link(id) {
+            var id = id;
+            var uladd = document.querySelector('.ul'+id);
+
+            var liadd = document.querySelectorAll('.li'+id);
+            for (var i = 0; i < liadd.length; i++) {
+                uladd.innerHTML += '<li>' +liadd[i].parentNode.innerHTML+ '</li><ul id="ul' +liadd[i].id+ '"></ul>';
+            }
+        }
+
         </script>
     </head>
     <body>
@@ -106,9 +112,9 @@
     <select  id="periodo" name="periodo">
     </select>
 </div>
-<div class="graphite">
+<ul class="graphite">
     <!-- Desde la Base -->
-</div>
+</ul>
 <div class="clear"></div>
 
 
@@ -133,7 +139,7 @@
     <section id="mascara"></section>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+    
     <script type="text/javascript" charset="utf-8" src="js/classMenu.js"></script>
     <script type="text/javascript" src="js/menu.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/logout.js"></script>
