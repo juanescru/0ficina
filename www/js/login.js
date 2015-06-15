@@ -17,10 +17,14 @@ $(function(){
 
     //Comprueba si hay variables locales definidas
     //
-    if (window.localStorage.getItem('usernameLocal') && window.localStorage.getItem('userIdLocal') 
-        && window.localStorage.getItem('regIdLocal') && window.localStorage.getItem('sessionStatusLocal')) {
-        //Si existen los datos del usuario almacenados localmente redirecciona a la página de inicio 
-        window.setTimeout(function(){ window.location ="welcome.html";},1750);
+    if (window.localStorage.getItem("isCBCheckedLocal")) {
+        //Si existen los datos de usuario almacenados localmente redirecciona a la página de inicio 
+        window.setTimeout(function(){ location.href ="welcome.html";},1750);
+    }else{
+        localStorage.removeItem("usernameLocal");
+        localStorage.removeItem("regIdLocal");
+        localStorage.removeItem("userIdLocal");
+        localStorage.removeItem("sessionStatusLocal");
     }
 
     //Proceso de logueo remoto
@@ -34,6 +38,13 @@ $(function(){
                 var username = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
                 var regId = document.getElementById('regId').value;
+                //Almacenamos en una variable temporal el estado del checkBox
+                var isCBChecked = false;
+                if(document.getElementById('save').checked){
+                    isCBChecked = true;
+                }else{
+                    isCBChecked = false;
+                }
                  //variables extraidas del servidor
                 var userIdRemoto;
                 var usernameRemoto;
@@ -61,23 +72,33 @@ $(function(){
                             queryData('USP_VBC_SET_MOBILE_SESSION', ['string', regId, 'integer', userIdRemoto], validateRegister);
                             function validateRegister(dataSet){
                                 var rec = dataSet[0];
-                                //Sí el status es igual a 0 la inserción fue exitosa
-                                if(rec['status'] == 0){
-                                    //Sí el checkbox esta seleccionado se almacenan variables locales para logueo automático
+                                //Sí el status es igual a 0 la inserción fue exitosa y si es igual a 1 el SESSION_CODE ya existía
+                                if(rec['status'] == 0 || rec['status'] == 1){
+                                    //Sí el checkbox esta seleccionado se almacena su estado para redirección automática
                                     if(document.getElementById('save').checked){
-                                        localStorage.setItem("usernameLocal", usernameRemoto);
-                                        localStorage.setItem("regIdLocal", regId);
-                                        localStorage.setItem("userIdLocal", userIdRemoto);
-                                        localStorage.setItem("sessionStatusLocal", sessionStatusRemoto);
+                                        localStorage.setItem("isCBCheckedLocal", isCBChecked);
                                     }
+                                    localStorage.setItem("usernameLocal", usernameRemoto);
+                                    localStorage.setItem("regIdLocal", regId);
+                                    localStorage.setItem("userIdLocal", userIdRemoto);
+                                    localStorage.setItem("sessionStatusLocal", sessionStatusRemoto);
+
                                     location.href = "welcome.html";
                                 }else{
                                     app.showNotificactionVBC('Error en el inicio de sesión, intente de nuevo');
                                 }
                             }
                         }
-                    }else{
-                        app.showNotificactionVBC('Sus datos de acceso son incorrectos');
+                    }else if(rec['status'] == 1){
+                        app.showNotificactionVBC('Usuario Inexistente');
+                    }else if(rec['status'] == 2){
+                        app.showNotificactionVBC('El password es Incorrecto');
+                    }else if(rec['status'] == 3){
+                        app.showNotificactionVBC('El Usuario aún no es activado');
+                    }else if(rec['status'] == 4){
+                        app.showNotificactionVBC('Ésta cuenta ya está en uso');
+                    }else if(rec['status'] == 5){
+                        app.showNotificactionVBC('Su Oficina Virtual está bloqueda');
                     }
                 }                
             } else {
