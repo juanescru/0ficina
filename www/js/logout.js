@@ -14,32 +14,12 @@ function eliminarCredenciales() {
         localStorage.removeItem("regIdLocal");
         localStorage.removeItem("userIdLocal");
         localStorage.removeItem("sessionStatusLocal");
+        localStorage.removeItem("isCBCheckedLocal")
 
         location.href = "login.html";
       }else{
         alert("Error en la BD");
       }
     }
-	
-  /*
-    $.ajax({
-       dataType: "text json",
-       type: "POST",
-       url: "http://192.168.1.66:50223/WS_funciones.asmx/eliminarRegId",
-       data: {"idUsuario": idUsuarioLocal, "regId": regIdLocal},
-       error: function()
-       {
-         //
-       },
-       success: function(data){
-            localStorage.removeItem("usernameLocal");
-            localStorage.removeItem("passwordLocal");
-            localStorage.removeItem("regIdLocal");
-            localStorage.removeItem("idUsuarioLocal");
-
-            location.href = "login.html";            
-       }
-    }); //Termina envio por ajax*/
-
     
 }
