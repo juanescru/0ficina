@@ -10,10 +10,15 @@
         <link rel="stylesheet" type="text/css" href="css/styleMenu.css">
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">     
         <link rel="stylesheet" type="text/css" href="css/visor_volumen_detalles.css"> 
-
-        <link href="css/visor_volumen_graphite.css" rel="stylesheet" type="text/css" />
-
         <title>Detalles</title>
+        <script type="text/javascript" src="js/lib.js"></script>
+        <script type="text/javascript">
+        ////////////////////////////////////////////////
+        /********  Imprime todos los nombres **********/
+        window.addEventListener('load', function() {
+            queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer','12','integer','0','integer','0','integer','16','integer','1'], visor);
+            
+        });
     </head>
     <body>
         <div>
