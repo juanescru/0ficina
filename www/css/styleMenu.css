@@ -1,12 +1,10 @@
-* {
+header * {
 	padding:0;
 	margin:0;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-
-
 
 header {	
 	font-size: 12px;
@@ -105,7 +103,29 @@ header nav ul li .caret {
 	top: 0px;
 	left: 0px;
 	right: 0px;
-	bottom: 0px;	
+	bottom: 0px;
+	text-align: center;
+}
+#mascaraAJAX{
+	position: fixed;
+	z-index: 9000;
+	display: none;
+	background-color: black;
+	opacity: 0.6;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	text-align: center;
+}
+
+#mascaraAJAX #img {
+	z-index: 10010;
+	position: fixed;
+  	top: 50%; 
+  	left: 50%;
+  	margin-top: -64px;
+  	margin-left: -64px;
 }
 
 @media screen and (max-width: 1680px) {
@@ -144,6 +164,7 @@ header nav ul li .caret {
 		margin: 0;
 		overflow: scroll;
 		top: 0px;
+
 	}
 
 	header nav ul li {

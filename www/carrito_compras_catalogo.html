@@ -6,7 +6,6 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=no">
-
         <link rel="stylesheet" type="text/css" href="css/styleMenu.css">
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
@@ -16,85 +15,7 @@
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
         </script>
-
-        <script type="text/javascript">
-            window.addEventListener('load',function() {
-                /////////////////////////////////////////////////
-                /******** Llena combobox de categorías *********/
-                var cat = document.getElementById('categoria');
-                //var egoria = getByURL()['categoria']==null ? getByURL()['categoria'] : 1;
-                var egoria = 1;
-                var get = getByURL()['categoria'];
-                if (typeof get != "undefined" && get != '') {
-                    egoria = get;
-                    Debug(egoria);
-                }else {
-                    egoria = 1
-                }
-                var argumentos = [
-                'integer', '0',
-                'integer', egoria,//categoria
-                'integer','12',//Usuario
-                'integer', '7',
-                'string' ,  '',
-                'integer',  '',
-                'integer',  '',
-                'integer', '4',//País
-                'integer',  '',
-                'integer',  '',
-                'integer',  ''
-                ];
-
-                //Carga la tabla cuando se actualiza el combobox
-                cat.addEventListener('change', function(){
-                    var opcion = cat.value;
-                    argumentos[3] = opcion;
-                    queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, listaArticulos, 2);
-                    egoria = opcion;
-                });
-
-                queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, categorias);
-                function categorias(dataSet) {
-                    var select_categoria = document.getElementById('categoria');
-                    var rec = dataSet[0];
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        rec = dataSet[idx];
-                        var options = document.createElement('option');
-                        options.text = rec['groupName'];
-                        options.value = rec['itemGroupId'];
-                        select_categoria.options.add(options);
-                    }
-                    document.getElementById('categoria').value = egoria;
-                }
-                /////////////////////////////////////////////////
-                /******** Carga articulos a la tabla *********/
-                queryData('USP_VBC_GET_ITEM_CATALOG', argumentos, listaArticulos, 2);
-                function listaArticulos(dataSet) {
-                    var articulos = document.getElementById('articulos');
-                    showWaitLoader('articulos');
-                    var rec = dataSet[0];
-                    var text = "", code = '';
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        rec = dataSet[idx];
-                        code = rec['itemCode'];
-                        text += '<tr id="TR-' +code+ '">';
-                        text += '<td id="'    +code+ '"><a href="carrito_compras_detalles.html?categoria=' +egoria+ '&code=' +code+ '&price=' +
-                            rec['price']+ '">' +
-                            rec['itemCode'] + '</a></td><td id="DES-' +code+ '">' + 
-                            rec['description'] + '</td><td id="PRE-'  +code+ '">$' + 
-                            rec['price'] + '</td><td id="PUN='  +code+ '">' + 
-                            rec['itemPvDistributor'] + '</td><td id="VCO-' +code+ '">' + 
-                            rec['itemCvDistributor'] + '</td><td id="PSO-' +code+ '">' + 
-                            rec['weight'] + '</td><td id="CAN-' +code+ '">' +
-                            '<input type="number" id="TXT-'     +code+ '" placeholder="cantidad" size="7" />' +
-                            '<input type="submit" class="comprar" value="Comprar" /></td>';
-                        text += '</tr>';
-                    }
-                    articulos.innerHTML = text;
-                }
-
-            });
-        </script>
+        <script type="text/javascript" src="js/carrito_compras.js"></script>
 
     </head>
     <body>
@@ -161,6 +82,7 @@
         <nav id="menu"></nav>
     </header>
     <section id="mascara"></section>
+    <div id="mascaraAJAX"></div>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
