@@ -21,90 +21,20 @@ function fillKits(dataSet){
 
     $('#kit').html(text);
 
-    /*if(!localStorage.getItem("susc2Local")){
-        $('#tdKit span').text($('#kit option:selected').text());
-    }else{
-        var extraer = localStorage.getItem("susc2Local");
-        var array = extraer.split('","');
-        $('#kit').val(array[12]);
-        $('#tdKit span').text($('#kit option:selected').text());
-    }*/
+    var extraer = localStorage.getItem("susc2Local");
+    var ResArray = extraer.split('","');
 
-}          
+    $('#kit').val(ResArray[12]);
+    if($('#kit').val() == 'PAQ1000MX' || $('#kit').val() == 'PAQ1001MX' || $('#kit').val() == 'PAQ1002MX' ||
+     $('#kit').val() == 'PAQ1003MX' || $('#kit').val() == 'PAQ1004MX'){
 
-/*Devuelve conjunto de datos y carga SELECT de METODOS DE ENVÍO con los datos obtenidos*/
-queryData('USP_VBC_GET_WAREHOUSE_BY_COUNTRY', ['integer', '4'], fillWarehouses);
+        $('tr#codigoAutorizacion').show(200);
 
-function fillWarehouses(dataSet){
-    var rec = dataSet[0];
-    var text = '';
+        $('#txtCodigo').val(ResArray[13]);                
+                        
+    }
 
-    for(var idx = 0; idx < dataSet.length; idx++){
-        rec = dataSet[idx];
-        text += '<option value="'+ rec["warehouseId"] +'">'+ rec["description"] +'</option>';
-    };
-
-    $('#centroAutorizado').append(text);               
-
-    /*if(!localStorage.getItem("susc2Local")){
-        //$('#tdCentroAutorizado span').text($('#CentroAutorizado option:selected').text());
-    }else{
-        var extraer = localStorage.getItem("susc2Local");
-        var array = extraer.split('","');
-        $('#kit').val(array[12]);
-        $('#tdKit span').text($('#kit option:selected').text());
-    }*/
-}
-
-/*Devuelve conjunto de datos y carga SELECT de PAQUETERÍAS con los datos obtenidos*/
-queryData('USP_VBC_GET_CARRIERS', ['integer', '4'], fillCarriers);
-
-function fillCarriers(dataSet){
-    var rec = dataSet[0];
-    var text = '';
-
-    for(var idx = 0; idx < dataSet.length; idx++){
-        rec = dataSet[idx];
-        text += '<option value="'+ rec["carrierId"] +'">'+ rec["description"] +'</option>';
-    };
-
-    $('#paqueteria').html(text);
-
-    /*if(!localStorage.getItem("susc2Local")){
-        $('#tdPaqueteria span').text($('#paqueteria option:selected').text());
-    }else{
-        var extraer = localStorage.getItem("susc2Local");
-        var array = extraer.split('","');
-        $('#kit').val(array[12]);
-        $('#tdKit span').text($('#kit option:selected').text());
-    }*/
-
-}
-
-/*Devuelve conjunto de datos y carga SELECT de MÉTODO DE PAGO con los datos obtenidos*/
-queryData('USP_VBC_GET_PAY_METHOD', ['integer', '1', 'integer', '4'], fillPayMethod);
-
-function fillPayMethod(dataSet){
-    var rec = dataSet[0];
-    var text = '';                
-
-    for(var idx = 0; idx < dataSet.length; idx++){
-        rec = dataSet[idx];
-        text += '<option value="'+ rec["payMethodId"] +'">'+ rec["description"] +'</option>';
-    };
-
-    $('#metodoPago').html(text);
-
-    /*if(!localStorage.getItem("susc2Local")){
-        $('#tdMetodoPago span').text($('#metodoPago option:selected').text());
-    }else{
-        var extraer = localStorage.getItem("susc2Local");
-        var array = extraer.split('","');
-        $('#kit').val(array[12]);
-        $('#tdKit span').text($('#kit option:selected').text());
-    }*/
-
-}
+}   
 
 /*Devuelve conjunto de datos y carga SELECT de METODOS DE ENVÍO con los datos obtenidos*/
 queryData('USP_VBC_GET_SHIPMENT_METHODS', ['integer', '', 'integer', '4'], fillShipmentMethods);
@@ -120,15 +50,89 @@ function fillShipmentMethods(dataSet){
 
     $('#metodoEnvio').append(text);
 
-    /*if(!localStorage.getItem("susc2Local")){
-        //$('#tdMetodoEnvio span').text($('#metodoEnvio option:selected').text());
-    }else{
-        var extraer = localStorage.getItem("susc2Local");
-        var array = extraer.split('","');
-        $('#kit').val(array[12]);
-        $('#tdKit span').text($('#kit option:selected').text());
-    }*/
+    var extraer = localStorage.getItem("susc2Local");
+    var ResArray = extraer.split('","'); 
 
+    if(ResArray.length == 17){
+        $('#metodoEnvio').val(ResArray[14]);
+
+        if($('#metodoEnvio').val() == 1){
+            $('tr#centroAutorizadoTr').show(200);
+        }else{
+            $('tr#paqueteriaTr').show(200);
+        }
+    }else{
+        $('#metodoEnvio').val(ResArray[13]);
+
+        if($('#metodoEnvio').val() == 1){
+            $('tr#centroAutorizadoTr').show(200);
+        }else{
+            $('tr#paqueteriaTr').show(200);
+        }
+    }
+}       
+
+/*Devuelve conjunto de datos y carga SELECT de METODOS DE ENVÍO con los datos obtenidos*/
+queryData('USP_VBC_GET_WAREHOUSE_BY_COUNTRY', ['integer', '4'], fillWarehouses);
+
+function fillWarehouses(dataSet){
+    var rec = dataSet[0];
+    var text = '';
+
+    for(var idx = 0; idx < dataSet.length; idx++){
+        rec = dataSet[idx];
+        text += '<option value="'+ rec["warehouseId"] +'">'+ rec["description"] +'</option>';
+    };
+
+    $('#centroAutorizado').append(text);    
+
+    var extraer = localStorage.getItem("susc2Local");
+    var ResArray = extraer.split('","');           
+
+    if(ResArray.length == 17){
+        $('#centroAutorizado').val(ResArray[15])
+    }else{
+        $('#centroAutorizado').val(ResArray[14])
+    }   
+}
+
+/*Devuelve conjunto de datos y carga SELECT de PAQUETERÍAS con los datos obtenidos*/
+queryData('USP_VBC_GET_CARRIERS', ['integer', '4'], fillCarriers);
+
+function fillCarriers(dataSet){
+    var rec = dataSet[0];
+    var text = '';
+
+    for(var idx = 0; idx < dataSet.length; idx++){
+        rec = dataSet[idx];
+        text += '<option value="'+ rec["carrierId"] +'">'+ rec["description"] +'</option>';
+    };
+
+    $('#paqueteria').html(text);
+}
+
+/*Devuelve conjunto de datos y carga SELECT de MÉTODO DE PAGO con los datos obtenidos*/
+queryData('USP_VBC_GET_PAY_METHOD', ['integer', '1', 'integer', '4'], fillPayMethod);
+
+function fillPayMethod(dataSet){
+    var rec = dataSet[0];
+    var text = '';                
+
+    for(var idx = 0; idx < dataSet.length; idx++){
+        rec = dataSet[idx];
+        text += '<option value="'+ rec["payMethodId"] +'">'+ rec["description"] +'</option>';
+    };    
+
+    $('#metodoPago').html(text);
+
+    var extraer = localStorage.getItem("susc2Local");
+    var ResArray = extraer.split('","');  
+
+    if(ResArray.length == 17){
+        $('#metodoPago').val(ResArray[16])
+    }else{
+        $('#metodoPago').val(ResArray[15])
+    }     
 }
 
 function fillDay(){
@@ -162,3 +166,4 @@ function fillYear(){
     }
     $('#ano').append(text);
 }
+

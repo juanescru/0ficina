@@ -52,7 +52,7 @@
                            <tr>
                              <th>Número y Nombre de Patrocinador:</th>
                              <td style="border:1px solid #087CCD;">
-                                <label id="lblNumeroPatrocinador">12</label><label id="lblNombrePatrocinador">Martín, Sánchez Salazar</label>
+                                <label id="lblNumeroPatrocinador"></label><label id="lblNombrePatrocinador"></label>
                             </td>                                                    
                            </tr>
                             <tr>
@@ -179,17 +179,18 @@
 
                 $('#lenguaje').html(text);
 
-                if(!localStorage.getItem("susc1Local")){
-                    $('#tdLenguaje span').text($('#lenguaje option:selected').text());
-                }else{
-                    var extraer = localStorage.getItem("susc1Local");
-                    var array = extraer.split('","');
+                var extraer = localStorage.getItem("susc1Local");
+                var array = extraer.split('","');
 
-                    $('#lenguaje').val(array[0]);
-                    $('#tdLenguaje span').text($('#lenguaje option:selected').text());
-                }
-            
+                $('#lenguaje').val(array[0]);            
             }
+
+            /*Añade datos de patrocinador provenientes de las variables locales*/
+            var usernameLocal = localStorage.getItem("usernameLocal");
+            var userIdLocal = localStorage.getItem("userIdLocal");
+
+            $('#lblNumeroPatrocinador').append(userIdLocal+' ');
+            $('#lblNombrePatrocinador').append(' '+usernameLocal);
         
     </script>
     </body>

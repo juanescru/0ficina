@@ -61,11 +61,12 @@
                             <tr>
                                 <th>Dirección Fiscal:</th>
                                 <td id="tdEstado" style="border:1px solid #087CCD;">
-                                    <label for="Calle" id="lblCalle"></label>
-                                    <label for="Colonia" id="lblColonia"></label>
+                                    <label for="Calle" id="lblCalle"></label><br>
+                                    <label for="Colonia" id="lblColonia"></label><br>
+                                    <label for="Ciudad" id="lblCiudad"></label><br>
                                     <select  name="estado" id="estado" disabled>
-                                    </select>
-                                    <label for="CP" id="lblCP"></label>
+                                    </select><br>
+                                    <label for="CP" id="lblCP"></label><br>
                                 </td>    
                             </tr>
                             <tr>
@@ -141,16 +142,10 @@
 
                 $('#estado').append(text);
 
-                if(!localStorage.getItem("susc3Local")){
-                    $('#tdEstado span').text($('#estado option:selected').text());
-                }else{
-                    var extraer = localStorage.getItem("susc3Local");
-                    var array = extraer.split('","');
+                var extraer = localStorage.getItem('susc3Local');
+                var ResArray = extraer.split('","');
 
-                    $('#estado').val(array[5]);
-                    $('#tdEstado span').text($('#estado option:selected').text());
-                }
-
+                $('#estado').val(ResArray[6]);
             }
         
     </script>
