@@ -1,16 +1,14 @@
 function ValidaRfc(rfcStr) {
 	var strCorrecta;
-	strCorrecta = rfcStr;	
-	if (rfcStr.length == 12){
-	var valid = '^(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
-	}else{
-	var valid = '^(([A-Z]|[a-z]|\s){1})(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))';
-	}
+	strCorrecta = rfcStr;
+
+	var valid = /^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/;
+
 	var validRfc=new RegExp(valid);
 	var matchArray=strCorrecta.match(validRfc);
 	if (matchArray==null) {
-		app.showNotificactionVBC('Su RFC es inválido, debe contener al menos 10 caracteres');
-
+		//app.showNotificactionVBC('Su RFC es inválido, debe contener al menos 10 caracteres');
+		//alert("rfc invalido");
 		return false;
 	}
 	else
@@ -30,8 +28,8 @@ function ValidaCurp(curpStr) {
 	var validCurp=new RegExp(valid);
 	var matchArray=strCorrecta.match(validCurp);
 	if (matchArray==null) {
-		app.showNotificactionVBC('Su CURP es inválida, debe contener 18 caracteres');
-
+		//app.showNotificactionVBC('Su CURP es inválida, debe contener 18 caracteres');
+		//alert("curp invalido");
 		return false;
 	}
 	else
@@ -50,8 +48,8 @@ function ValidaTelefono(telefonoStr){
 	var validTelefono = new RegExp(valid);
 	var matchArray = strCorrecta.match(validTelefono);
 	if(matchArray == null){
-		app.showNotificactionVBC("El número de teléfono debe contener 10 dífitos");
-		//alert("mal");
+		//app.showNotificactionVBC("El número de teléfono debe contener 10 dífitos");
+		//alert("telefono invalido");
 		return false;
 	}else{
 		return true;
@@ -66,8 +64,8 @@ function ValidaEmail(emailStr) {
 	var validEmail=new RegExp(valid);
 	var matchArray=strCorrecta.match(validEmail);
 	if (matchArray==null) {
-		app.showNotificactionVBC('Su Correo Electrónico es inválido, debe contener un @ y un punto');
-
+		//app.showNotificactionVBC('Su Correo Electrónico es inválido, debe contener un @ y un punto');
+		//alert("mail invalido");
 		return false;
 	}
 	else
@@ -81,9 +79,24 @@ function ValidaEmails(email2){
 	var emailUno = $('#txtEmail').val();
 
 	if(email2 != emailUno){
-		//alert("no coinciden");
-		app.showNotificactionVBC('Su Correo Electrónico no coincide con la confirmación');
+		//alert("no coinciden emails");
+		//app.showNotificactionVBC('Su Correo Electrónico no coincide con la confirmación');
 
+		return false;
+	}else{
+		return true;
+	}
+}
+
+function ValidaCP(cpStr){
+	var strCorrecta;
+	strCorrecta = cpStr;
+
+	var valid = /^\d{5}$/;
+
+	var validCP = new RegExp(valid);
+	var matchArray = strCorrecta.match(validCP);
+	if(matchArray == null){
 		return false;
 	}else{
 		return true;
@@ -99,7 +112,7 @@ function ValidaAlias(aliasStr){
 	var matchArray = strCorrecta.match(validAlias);
 	if(matchArray == null){
 		app.showNotificactionVBC("Su Alias es muy largo o contiene caracteres no válidos");
-		//alert("mal");
+		//alert("email mal");
 		return false;
 	}else{
 		return true;
@@ -151,12 +164,23 @@ function ValidaCamposVacios(){
 	var codigo = $('#txtCodigo').val();
 	var metodoEnvio = $('#metodoEnvio').val();
 	var centroAutorizado = $('#centroAutorizado').val();
+	var kit = $('#kit').val();
 
 	if(nombre == "" || apePat == "" || apeMat == "" || dia == "dia" || mes == "mes" || ano == "ano" || 
 		lugarNacimiento == "" || telefono == "" || metodoEnvio == "" || rfc == "" || curp == "" || email == "" || 
 		emailConfirm == ""){
-		//alert("Campos Vacíos");
-		app.showNotificactionVBC('Campos Vacíos');
+		app.showNotificactionVBC("Campos Vacíos");
+		//app.showNotificactionVBC('Campos Vacíos');
+	}else if(!ValidaEmails(emailConfirm)){
+		app.showNotificactionVBC("* CONFIRMACIÓN EMAIL INVÁLIDO: El correo electrónico no coincide con la confirmación");
+	}else if(!ValidaEmail(email)){
+		app.showNotificactionVBC("* EMAIL INVÁLIDO: El correo Electrónico debe contener un @ y un punto");
+	}else if(!ValidaTelefono(telefono)){
+		app.showNotificactionVBC("* TELÉFONO INVÁLIDO: El Número de Teléfono debe contener 10 dígitos");
+	}else if(!ValidaCurp(curp)){
+		app.showNotificactionVBC("* CURP INVÁLIDO: El CURP debe contener 18 caracteres");
+	}else if(!ValidaRfc(rfc)){
+		app.showNotificactionVBC("* RFC INVÁLIDO: El RFC debe contener 13 caracteres");
 	}else{
 		window.location.href = "suscriptores3.html";
 	}
@@ -166,13 +190,16 @@ function ValidaCamposVacios2(){
 	var calle = $('#txtCalle').val();
 	var num = $('#txtNum').val();
 	var colonia = $('#txtColonia').val();
+	var estado = $('#estado').val();
 	var ciudad = $('#txtCiudad').val();
 	var cp = $('#txtCP').val();
 
-	if(calle == "" || num == "" || colonia == "" || ciudad == "" || cp == ""){
-		//alert("Campos Vacíos");
+	if(calle == "" || num == "" || colonia == "" || estado == "estado" || ciudad == "" || cp == ""){
 		app.showNotificactionVBC('Campos Vacíos');
-	}else{
+	}else if(!ValidaCP(cp)){
+		app.showNotificactionVBC("* CÓDIGO POSTAL INVÁLIDO: El código Postal debe contener 5 dígitos");
+	}
+	else{
 		window.location.href = "suscriptores4.html";
 	}
 }
@@ -185,9 +212,19 @@ function ValidaCamposVacios3(){
 	var passwordConfirm = $('#txtPasswordConfirm').val();
 
 	if(alias == "" || password == "" || passwordConfirm == ""){
-		//alert("Campos Vacíos");
-		app.showNotificactionVBC('Campos Vacíos');
+		alert('Campos Vacíos');
+		return false;
+	}else if(!ValidaContraseña2(passwordConfirm)){
+		alert('* CONFIRMACIÓN DE CONTRASEÑA INVÁLIDA: La contraseña no coincide con la confirmación');
+		return false;
+	}else if(!ValidaContraseña(password)){
+		alert('* CONTRASEÑA INVÁLIDA: La contraseña solo puede contener números y letras y no debe ser menor que 8 ni mayor que 12 caracteres');
+		return false;
+	}else if(!ValidaAlias(alias)){
+		alert('* CONFIRMACIÓN DE CONTRASEÑA INVÁLIDA: El Alias es muy largo o contiene caracteres no válidos');
+		return false;
 	}else{
-		window.location.href = "suscriptores5.html";
+	return true;	
+		//window.location.href = "suscriptores5.html";
 	}
 }

@@ -49,13 +49,13 @@
                            <tr>
                              <th>Contraseña (8 - 12 caracteres o dígitos):</th>
                              <td>
-                                <input  type="password" name="txtPassword" id="txtPassword" onblur="ValidaContraseña(this.value)">
+                                <input  type="password" name="txtPassword" id="txtPassword">
                             </td>                                                   
                            </tr>
                             <tr>
                                 <th>Confirme su Contraseña:</th>
                                 <td>
-                                    <input  type="password" name="txtPasswordConfirm" id="txtPasswordConfirm" onblur="ValidaContraseña2(this.value)">
+                                    <input  type="password" name="txtPasswordConfirm" id="txtPasswordConfirm">
                                 </td>    
                             </tr>                            
                             <tr style="background-color:#ffffff">
@@ -65,7 +65,7 @@
                                 <td colspan="2">
                                     <a href="#" onclick="Href('suscriptores3.html')"   ><span class="icon-arrow-left"></span> ANTERIOR</a>
                                     <!--<a href="suscriptores3.html"    data-role="button">SIGUIENTE -></a>-->
-                                    <input type="button" id="btnSiguiente4" name="btnSiguiente4"   onclick="ValidaCamposVacios3()" value="SIGUIENTE <span class='icon-arrow-right'></span>">
+                                    <input type="button" id="btnSiguiente4" name="btnSiguiente4"   onclick="validateFields()" value="SIGUIENTE <span class='icon-arrow-right'></span>">
                                 </td>
                             </tr>
                          </tbody>
@@ -99,11 +99,31 @@
     
     <script type="text/javascript" charset="utf-8" src="js/logout.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/notificaciones.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/connect.js"></script>
     <script type="text/javascript"> 
             //El registro al servicio de google lo hacemos automáticamente
             app.initialize();            
             menu.cargarMenu();
-        
+            
+            function validateFields(){
+                if(ValidaCamposVacios3()){
+                    var alias = $('#txtAlias').val();
+                    /*Devuelve '0' si el alias no está disponible y 1 si aún no está siendo utilizado por otro usuario*/
+                    queryData('USP_VBC_VALIDATE_NICKNAME', ['string', alias, 'integer', '0'], getIsAvailable);
+
+                    function getIsAvailable(dataSet){
+                        var rec = dataSet[0];
+
+                        if(rec['isAvailable'] == 0){
+                            alert('El Alias que usted ha ingresado ya es utiliado por otro usuario, elija otro');
+                        }else if(rec['isAvailable'] == 1){
+                            window.location.href = "suscriptores5.html";
+                        }
+                    }  
+                }
+            }
+            
+
     </script>
     </body>
 </html>

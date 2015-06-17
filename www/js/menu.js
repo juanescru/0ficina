@@ -115,6 +115,7 @@ $(document).ready(function() {
         var pais = $('#pais').val();
         var calle = $('#txtCalle').val();
         var num = $('#txtNum').val();
+        var numInt = $('#txtNumInt').val();
         var colonia = $('#txtColonia').val();
         var ciudad = $('#txtCiudad').val();
         var estado = $('#estado').val();
@@ -127,6 +128,7 @@ $(document).ready(function() {
         cadena += pais + "\",";
         cadena += "\"" + calle + "\",";
         cadena += "\"" + num + "\",";
+        cadena += "\"" + numInt + "\",";
         cadena += "\"" + colonia + "\",";
         cadena += "\"" + ciudad + "\",";
         cadena += "\"" + estado + "\",";
@@ -163,7 +165,8 @@ $(document).ready(function() {
             var ResArray = extraer.split('","');
 
             $('#lenguaje').val(ResArray[0]);
-            $("td#tdLenguaje span").text($('#lenguaje option:selected').text());
+            $('#lblNumeroPatrocinador').val(ResArray[1]);
+            $('#lblNombrePatrocinador').val(ResArray[2]);
         }
     }
 
@@ -180,66 +183,13 @@ $(document).ready(function() {
             $('#txtApeMat').val(ResArray[4]);
 
             $('#dia').val(ResArray[5]);
-            $('td#tdFechaNacimiento div:nth-child(1) div span').text($('#dia option:selected').text());
-
             $('#mes').val(ResArray[6]);
-            $('td#tdFechaNacimiento div:nth-child(2) div span').text($('#mes option:selected').text());
-
             $('#ano').val(ResArray[7]);
-            $('td#tdFechaNacimiento div:nth-child(3) div span').text($('#ano option:selected').text());
-
             $('#txtLugarNacimiento').val(ResArray[8]);
 
             $('#sexo').val(ResArray[9]);
-            $('td#tdSexo span').text($('#sexo option:selected').text());
-
             $('#txtTelefono').val(ResArray[10]);
             $('#txtEmail').val(ResArray[11]);
-
-            $('#kit').val(ResArray[12]);
-            $("td#tdKit span").text($('#kit option:selected').text());
-            if($('#kit').val() == 'PAQ1000MX' || $('#kit').val() == 'PAQ1001MX' || $('#kit').val() == 'PAQ1002MX' ||
-             $('#kit').val() == 'PAQ1003MX' || $('#kit').val() == 'PAQ1004MX'){
-
-                $('tr#codigoAutorizacion').show(200);
-
-                $('#txtCodigo').val(ResArray[13]);
-
-                $('#metodoEnvio').val(ResArray[14]);
-                $("td#tdMetodoEnvio span").text($('#metodoEnvio option:selected').text());
-
-                if($('#metodoEnvio').val() == 1){
-                    $('tr#centroAutorizadoTr').show(200);
-                    $('#centroAutorizado').val(ResArray[15]);
-                    $("td#tdCentroAutorizado span").text($('#centroAutorizado option:selected').text());
-                }else{
-                    $('tr#paqueteriaTr').show(200);
-                    $('#paqueteria').val(ResArray[15]);
-                    $("td#tdPaqueteria span").text($('#paqueteria option:selected').text());
-                }
-
-                $('#metodoPago').val(ResArray[16]);
-                $("td#tdMetodoPago span").text($('#metodoPago option:selected').text());
-                                
-            }else{
-
-                $('#metodoEnvio').val(ResArray[13]);
-                $("td#tdMetodoEnvio span").text($('#metodoEnvio option:selected').text());
-
-                if($('#metodoEnvio').val() == 1){
-                    $('tr#centroAutorizadoTr').show(200);
-                    $('#centroAutorizado').val(ResArray[14]);
-                    $("td#tdCentroAutorizado span").text($('#centroAutorizado option:selected').text());
-                }else{
-                    $('tr#paqueteriaTr').show(200);
-                    $('#paqueteria').val(ResArray[14]);
-                    $("td#tdPaqueteria span").text($('#paqueteria option:selected').text());
-                }
-
-                $('#metodoPago').val(ResArray[15]);
-                $("td#tdMetodoPago span").text($('#metodoPago option:selected').text());
-            }
-
         }
     }
 
@@ -250,19 +200,14 @@ $(document).ready(function() {
             var ResArray = extraer.split('","');
 
             $('#pais').val(ResArray[0]);
-            $('td#tdPais span').text($('#pais option:selected').text());
-
             $('#txtCalle').val(ResArray[1]);
             $('#txtNum').val(ResArray[2]);
-            $('#txtColonia').val(ResArray[3]);
-            $('#txtCiudad').val(ResArray[4]);
+            $('#txtNumInt').val(ResArray[3]);
+            $('#txtColonia').val(ResArray[4]);
+            $('#txtCiudad').val(ResArray[5]);
+            $('#txtCP').val(ResArray[7]);
 
-            $('#estado').val(ResArray[5]);
-            $('td#tdEstado span').text($('#estado option:selected').text());
-
-            $('#txtCP').val(ResArray[6]);
-
-            if(ResArray[7] == 1){
+            if(ResArray[8] == 1){
                 document.getElementById("cbMismaDir").checked = true;
             }
         }
@@ -295,11 +240,12 @@ $(document).ready(function() {
             $('#lblNombre').text(ResArray1[2]+ ", " +ResArray1[3]+ " " +ResArray1[4]);
             $('#lblTelefono').text(ResArray1[10]);
             $('#lblEmail').text(ResArray1[11]);
-            $('#lblCalle').text(ResArray2[1]+ " " +ResArray2[2]+ "-");
-            $('#lblColonia').text(ResArray2[3]+ " " +ResArray2[4]);
-            $('#estado').val(ResArray2[5]);
-            $('#tdEstado span').text($('#estado option:selected').text());
-            $('#lblCP').text(ResArray2[6]);
+
+            $('#lblCalle').text(ResArray2[1]+ " " +ResArray2[2]+ "-" +ResArray2[3]);
+            $('#lblColonia').text(ResArray2[4]);
+            $('#lblCiudad').text(ResArray2[5]);
+            $('#lblCP').text(ResArray2[7]);
+
             $('#lblPatrocinador').text(ResArray3[1]+ ", " +ResArray3[2]);
             $('#lblColocacion').text(ResArray3[1]+ ", " +ResArray3[2]);
         }

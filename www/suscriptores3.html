@@ -30,7 +30,7 @@
         <div id="contenedor" style="overflow-x: auto;">
 
             <div id="bienvenida">
-                <p>Pida la siguiente información para la dirección Fiscal(todos los campos son obligatorios).</p>
+                <p>Pida la siguiente información para la dirección Fiscal(todos los campos son obligatorios con excepción del Núm. Interior).</p>
                 <p style="font-weight:normal">Si la dirección Fiscal y de entrega de pedidos son iguales, marque el recuadro llamado "Misma dirección Fiscal".</p>
             </div>
             
@@ -52,6 +52,7 @@
                              <td>
                                 <input type="text" name="txtCalle" id="txtCalle" placeholder="Calle">
                                 <input type="number" name="txtNum" id="txtNum" placeholder="Núm. Exterior">
+                                <input type="text" name="txtNumInt" id="txtNumInt" placeholder="Núm. Interior">
                             </td>                                                   
                            </tr>
                             <tr>
@@ -70,13 +71,13 @@
                                 <th>Estado</th>
                                 <td id="tdEstado">
                                     <select name="estado" id="estado">
-                                        <option>Seleccione uno</option>
+                                        <option value="estado">Seleccione uno</option>
                                     </select>
                                 </td>    
                             </tr>
                            <tr>
                                 <th>Código Postal:</th>
-                                <td><input type="number" name="txtCP" id="txtCP"></td>    
+                                <td><input type="number" min="10000" max="99999" name="txtCP" id="txtCP"></td>    
                            </tr>
                            <tr>
                                <th>Misma Dirección Fiscal</th>
@@ -143,16 +144,10 @@
 
                 $('#estado').append(text);
 
-                /*if(!localStorage.getItem("susc2Local")){
-                    $('#tdPaqueteria span').text($('#paqueteria option:selected').text());
-                }else{
-                    var extraer = localStorage.getItem("susc2Local");
-                    var array = extraer.split('","');
+                var extraer = localStorage.getItem('susc3Local');
+                var ResArray = extraer.split('","');
 
-                    $('#kit').val(array[12]);
-                    $('#tdKit span').text($('#kit option:selected').text());
-                }*/
-
+                $('#estado').val(ResArray[6]);
             }
         
     </script>
