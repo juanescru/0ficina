@@ -6,6 +6,7 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=no">
+        <link rel="stylesheet" type="text/css" href="css/styleMenu.css">
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
         <style type="text/css">
             .ocultar {
@@ -14,23 +15,47 @@
             .mostrar {
                 display: block;
             }
-            li {
+            .graphite li {
                 list-style: none;
             }
-            button {
+            .graphite button {
                 background: white;
                 border: 0;
             }
         </style>
         <title>Vista Detalles</title>
-        <script type="text/javascript" src="js/connect.js">
-            //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
-        </script>
+        <script type="text/javascript" src="js/connect.js"></script>
         <script type="text/javascript">
-        ////////////////////////////////////////////////
-        /********  Imprime todos los nombres **********/
         window.addEventListener('load', function() {
-            queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer','12','integer','0','integer','0','integer','16','integer','1'], visor);
+            //Carga imagen ajax
+            showWaitLoader('mascaraAJAX');
+            $('#mascaraAJAX').fadeIn(300);
+            ///////////////////////////////////////////////////////
+            /************ Llena combobox de periodos *************/
+            queryData('USP_VBC_GET_PERIODS', ['integer','1','integer','0'], periodos);
+            var periodo = document.getElementById('periodo');
+            function periodos(dataSet) {
+                var rec = dataSet[0];
+                var text = '';
+                for(var idx = 0; idx < dataSet.length; idx++){
+                    rec = dataSet[idx];
+                    var opcion = document.createElement('option');
+                    opcion.text = rec['description'];
+                    opcion.value = rec['periodId'];
+                    periodo.options.add(opcion);
+                }
+            }
+
+            ////////////////////////////////////////////////
+            /********  Imprime todos los nombres **********/
+            periodo.addEventListener('change', function() {
+                queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer',12,'integer','0','integer','0','integer',periodo.value,'integer','1'], visor);
+                
+                //Carga imagen ajax
+                showWaitLoader('mascaraAJAX');
+                $('#mascaraAJAX').fadeIn(300);
+            });
+            queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer',12,'integer','0','integer','0','integer',periodo.value,'integer','1'], visor);
             function visor(dataSet) {
                 var rec = dataSet[0];
                 var text = '';
@@ -43,7 +68,8 @@
                     text += "<li class='ocultar'><span style='font-size:10px'></span><a onClick='link(event)' class='li" +
                     rec['userIdUp']+ "' id='"+
                     rec['userId']+ "' href='#'>" +
-                    rec['name']+ "</a> <button onClick='javascript:location.href=\"volumen_movil_detalles.html?id="+rec['userId']+"\"' class='icon-point-right'></button><ul class='ul" +
+                    rec['name']+ "</a> <button onClick='javascript:location.href=\"volumen_movil_detalles.html?id="+
+                    rec['userId']+"&period="+periodo.value+"\"' class='icon-point-right'></button><ul class='ul" +
                     rec['userId']+ "'></ul></li>\n";
                 }
                 //Imprime respuesta
@@ -56,6 +82,10 @@
                 evento.initMouseEvent('click',true, true, window,0,0,0,0,0, false, false, false, false, 0, null);
                 var desplegaNth1 = document.querySelector('li:nth-child(1)').childNodes[1];
                 desplegaNth1.dispatchEvent(evento);
+
+                //oculta imagen ajax
+                $('#mascaraAJAX').fadeOut(300);
+                $('#mascaraAJAX').html('');
             }
         });
 
@@ -119,10 +149,13 @@
 <!-- ***************************************************** -->
 <div style="text-align: right" id='divPeriodo'>
     <select  id="periodo" name="periodo">
+        <!-- Desde la Base -->
     </select>
 </div>
 <div class="graphite">
     <!-- Desde la Base -->
+</div>
+<div id="ajax">
 </div>
 <div class="clear"></div>
 
@@ -146,15 +179,16 @@
         <nav id="menu"></nav>
     </header>
     <section id="mascara"></section>
+    <div id="mascaraAJAX"></div>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-    
+    <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/classMenu.js"></script>
     <script type="text/javascript" src="js/menu.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/logout.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/notificaciones.js"></script>
-    <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript"> 
+            
             //El registro al servicio de google lo hacemos automáticamente
             app.initialize();            
             menu.cargarMenu();

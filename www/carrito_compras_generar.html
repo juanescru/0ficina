@@ -12,57 +12,11 @@
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
         <title>Levantar pedido</title>
         <script type="text/javascript" src="js/lib.js"></script>
+        <script type="text/javascript" src="js/carrito_compras.js"></script>
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
         </script>
         <script type="text/javascript">
-            window.addEventListener('load',function() {
-                /////////////////////////////////////////////////////
-                /************* Calcula Costo de envío **************/
-                var xml = '<PAGE><CART GRAN_TOTAL_ITEM_WEIGHT="11.5" COUNTRY_ID="4"/><SHIPPING_ADDRES SHIPPING_METHOD="2" CARRIER="3"/></PAGE>';
-                queryData('USP_VBC_GET_SHIPPING_COST', ['string',depurarXML(xml)], calculaEnvio);
-                function calculaEnvio(dataSet) {
-                    var rec = dataSet[0];
-                    document.getElementById('cargo_manejo').innerHTML = '$' +rec['shippingCharge'];
-                }
-
-                //////////////////////////////////////////////////////
-                /******* Llena combobox de Centro Autorizado ********/
-                queryData('USP_VBC_GET_USER_PROFILE_DATA', ['integer','12'], profileData);
-                function profileData(dataSet) {
-                    showWaitLoader('dataSet');
-                    var rec = dataSet[0];
-                    var tabla = '<table>';
-                    for(i = 0; i < dataSet.length; i++){
-                        rec = dataSet[i];
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Nombre:</td><td>' + rec['shipName'] + '</td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">País:</td><td><address>' + rec['mailingCountry'] + '</address></td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Calle/ Número:</td><td><address>' + rec['mailingAddressLine1'] + '</address></td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Ciudad/ Municipio:</td><td><address>' + rec['mailingAddressLine2'] + '</address></td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Ciudad:</td><td><address>' + rec['mailingCity'] + '</address></td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Estado / C.P.:</td><td><address>' +   rec['mailingState'] + '/ ' + 
-                                                                                            rec['mailingPostalCode'] + '</address></td>';
-                        tabla += '</tr>';
-                        tabla += '<tr>';
-                        tabla += '<td class="titulos">Instrucciones Especiales</td><td><input type="text" id="instrucciones" data-mini="true" /></td>';
-                        tabla += '</tr>';
-                    }
-                    tabla += '</table>';
-                    document.getElementById('dataSet').innerHTML = tabla;
-                }
-            });
-
         </script>
 
     </head>
@@ -84,19 +38,19 @@
                     <table id="totales">
                         <tr>
                             <td class="descrip">Subtotal:</td>
-                            <td id="subtotales"></td>
+                            <td id="subtotales" align="right"></td>
                         </tr>
                         <tr>
                             <td class="descrip">Cargo por Manejo:</td>
-                            <td id="cargo_manejo"><!-- Desde la base --></td>
+                            <td id="cargo_manejo" align="right"><!-- Desde la base --></td>
                         </tr>
                         <tr>
                             <td class="descrip">Impuesto  Total:</td>
-                            <td id="impuesto">--</td>
+                            <td id="impuesto" align="right">--</td>
                         </tr>
                         <tr>
                             <td class="descrip">Gran Total:</td>
-                            <td id="gran_total">--</td>
+                            <td id="gran_total" align="right">--</td>
                         </tr>
                     </table>
                     
@@ -133,6 +87,7 @@
         <nav id="menu"></nav>
     </header>
     <section id="mascara"></section>
+    <div id="mascaraAJAX"></div>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>

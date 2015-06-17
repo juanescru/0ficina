@@ -12,96 +12,13 @@
         <link rel="stylesheet" type="text/css" href="css/carrito_compras.css">
 
         <title>Levantar pedido</title>
+        <script type="text/javascript" src="js/carrito_compras.js"></script>
         <script type="text/javascript" src="js/connect.js">
             //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function, numeroTabla)
         </script>
         <script type="text/javascript">
             window.addEventListener('load',function() {
-                /////////////////////////////////////////////////////
-                /****** Llena combobox de Centro Autorizado ********/
-                queryData('USP_VBC_GET_WAREHOUSE_BY_COUNTRY', ['integer','4'], centroAutorizado);
-                function centroAutorizado(dataSet) {
-                    var rec = dataSet[0];
-                    var sucursal = document.getElementById('sucursal');
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        var options = document.createElement('option');
-                        rec = dataSet[idx];
-                        options.text = rec['description'];
-                        options.value = rec['warehouseId'];
-                        sucursal.options.add(options);
-                    }
-                    ocultar();
-                }
-                //////////////////////////////////////////////
-                /****** Llena combobox de Mensajería ********/
-                queryData('USP_VBC_GET_CARRIERS', ['integer','4'], mensajeria);
-                function mensajeria(dataSet) {
-                    var rec = dataSet[0];
-                    var paqueteria = document.getElementById('paqueteria');
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        var options = document.createElement('option');
-                        rec = dataSet[idx];
-                        options.text = rec['description'];
-                        options.value = rec['carrierId'];
-                        paqueteria.options.add(options);
-                    }
-                }
-                //////////////////////////////////////////////////
-                /****** Llena combobox de formas de pago ********/
-                queryData('USP_VBC_GET_PAY_METHOD', ['integer','1','integer','4'], formaPago);
-                function formaPago(dataSet) {
-                    var rec = dataSet[0];
-                    var forma_pago = document.getElementById('forma-pago');
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        var options = document.createElement('option');
-                        rec = dataSet[idx];
-                        options.text = rec['description'];
-                        options.value = rec['payMethodId'];
-                        forma_pago.options.add(options);
-                    }
-                }
-                ///////////////////////////////////////////////////
-                /******* Llena combobox de metodo de envío *******/
-                queryData('USP_VBC_GET_SHIPMENT_METHODS', ['integer','','integer','4'], metodoEnvio);
-                function metodoEnvio(dataSet) {
-                    var rec = dataSet[0];
-                    var metodo_envio = document.getElementById('metodo-envio');
-                    for(var idx = 0; idx < dataSet.length; idx++){
-                        var options = document.createElement('option');
-                        rec = dataSet[idx];
-                        options.text = rec['name'];
-                        options.value = rec['shipMethodId'];
-                        metodo_envio.options.add(options);
-                    }
-                    //Muestra si hay datos guardados
-                    if (window.localStorage.getItem('carrito_levantar')) {
-                        //extrae datos almacenados y los convierte en array
-                        var extraer = localStorage.getItem('carrito_levantar');
-                        var resArray = extraer.split('","');
-                        document.getElementById('metodo-envio').value = resArray[0];
-                        if (resArray[0] == 2) {
-                            document.getElementById('paqueteria').value = resArray[1];
-                        }
-                        else {
-                            document.getElementById('sucursal').value = resArray[1];
-                        }
-                        document.getElementById('forma-pago').value = resArray[2];
-                    }
-                    ocultar();
-                }//Termina función
-                function ocultar() {
-                    //Muestra u oculta centro autorizado o mensajería según sea el caso
-                    var option = document.getElementById('metodo-envio').value;
-                    //var option = $('#metodo-envio').val();
-                    if (option == 2) {
-                        $('#trSucursal').hide(0);
-                        $('#trPaqueteria').show(300);
-                    }
-                    else if (option == 1){
-                        $('#trPaqueteria').hide(0);
-                        $('#trSucursal').show(300);
-                    }
-                }
+            
             });
         </script>
 
@@ -184,6 +101,7 @@
         <nav id="menu"></nav>
     </header>
     <section id="mascara"></section>
+    <div id="mascaraAJAX"></div>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>

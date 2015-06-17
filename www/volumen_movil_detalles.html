@@ -12,13 +12,35 @@
         <link rel="stylesheet" type="text/css" href="css/visor_volumen_detalles.css"> 
         <title>Detalles</title>
         <script type="text/javascript" src="js/lib.js"></script>
+        <script type="text/javascript" src="js/connect.js">
+            //queryData(STORED_PROCEDURE, ['integer','1','string','abc','',1], function)
+        </script>
         <script type="text/javascript">
-        ////////////////////////////////////////////////
-        /********  Imprime todos los nombres **********/
         window.addEventListener('load', function() {
-            queryData('USP_VBC_GET_MATRIX_VIEWER', ['integer','12','integer','0','integer','0','integer','16','integer','1'], visor);
-            
+            //Carga imagen ajax
+            showWaitLoader('mascaraAJAX');
+            $('#mascaraAJAX').fadeIn(300);
+            //////////////////////////////////////////////////////
+            /********  Imprime información del usuario **********/
+            var id = getByURL()['id'];
+            var periodo = getByURL()['period'];
+            queryData('USP_VBC_GET_TREE_NODE_INFO', ['integer',id,'integer',periodo], visorDetalles);
+            function visorDetalles(dataSet) {
+                var rec = dataSet[0];
+                addTd('name', rec['name']);
+                addTd('pd', rec['pd']);
+                addTd('dateCreated', rec['dateCreated']);
+                addTd('personalVolume', rec['personalVolume']);
+                addTd('personalCommValue', rec['personalCommValue']);
+                function addTd(id, valor) {
+                    document.getElementById(id).innerHTML = valor;
+                }
+                //oculta imagen ajax
+                $('#mascaraAJAX').fadeOut(300);
+                $('#mascaraAJAX').html('');
+            }
         });
+        </script>
     </head>
     <body>
         <div>
@@ -35,8 +57,8 @@
 <!-- ***************************************************** -->
 <!-- ***************************************************** -->
 <!-- ***************************************************** -->
-                <h3>Abelardo<h3>
-                <div style="text-align:right; margin: 8px 0"><a href="#" onClick="javascript:history.back()">Regresar</a></div>
+                <h3 id="name"><!-- Desde la base --><h3>
+                <div style="text-align:right; margin: 8px 0"><a href="#" onClick="Href('volumen_movil.html')">Regresar</a></div>
                 <table>
                     <thead>
                         <tr class="ui-bar-a">
@@ -48,10 +70,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>5</td>
-                            <td>2010-09-10 00:00:00</td>
-                            <td>1,494.00</td>
-                            <td>1,659.00</td>
+                            <td id="pd"><!-- Desde la base --></td>
+                            <td id="dateCreated"><!-- Desde la base --></td>
+                            <td id="personalVolume"><!-- Desde la base --></td>
+                            <td id="personalCommValue"><!-- Desde la base --></td>
                         </tr>
                     </tbody>
                 </table>
@@ -73,16 +95,14 @@
         <nav id="menu"></nav>
     </header>
     <section id="mascara"></section>
+    <div id="mascaraAJAX"></div>
     
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/classMenu.js"></script>
     <script type="text/javascript" src="js/menu.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/logout.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/notificaciones.js"></script>
-
-    <script type="text/javascript" src="js/visor_volumen_jquery.cookie.js"></script>
-    <script type="text/javascript" src="js/visor_volumen_jquery.dcdrilldown.1.2.js"></script>
 
     <script type="text/javascript"> 
             //El registro al servicio de google lo hacemos automáticamente
