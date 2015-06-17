@@ -194,6 +194,35 @@ window.addEventListener('load',function() {
             }
         });
 
+        document.querySelector('.levantar-siguiente').addEventListener('click', function() {
+            var formaPago = document.getElementById('forma-pago').value;
+            var metodoEnvio = document.getElementById('metodo-envio').value;
+            var sucursal = document.getElementById('sucursal').value;
+            if (formaPago == "0") {
+                app.showNotificactionVBC("Seleccione una forma de pago y oprima siguiente");
+            }
+            //En caso de elegir envío ocurre, valida que elija un centro autorizado
+            else if (metodoEnvio == 1 && sucursal == 0) {
+                app.showNotificactionVBC("Seleccione un centro autorizado");
+            }
+            else {
+                //Guardar datos
+                var datos = "";
+                var paqueteria = document.getElementById('paqueteria').value;
+                datos = metodoEnvio + "\",\"";
+                if (metodoEnvio == 2) {
+                    datos += paqueteria + "\",\"";
+                }
+                else {
+                    datos += sucursal + "\",\"";
+                }
+                datos += formaPago;
+            
+                localStorage.setItem('carrito_levantar', datos);
+                location.href='carrito_compras_generar.html';
+            }
+        });
+
     }//Termina carrito_compras_levantar.html
 
 

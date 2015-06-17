@@ -212,31 +212,6 @@ $(document).ready(function() {
 
     //
     //Termina Inscripciones
-    
-
-    //Carrito de compras
-    //
-    
-
-    //Cancelar pedido
-    //
-    
-    
-    //Guardar Método de envío;
-    if(menu.checkRelativeRoot() == "carrito_compras_levantar.html") {
-
-        //Metodo de envío
-        
-
-        
-
-        
-    }
-
-    
-
-    //
-    //Termina Carrito de compras
 
     //Inicia validación inscripciones
     //
