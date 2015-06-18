@@ -1,8 +1,10 @@
 window.addEventListener('load',function() {
-    if(menu.checkRelativeRoot() == "carrito_compras_catalogo.html") {
-    //Carga imagen ajax para carrito compras catalogo
-    showWaitLoader('mascaraAJAX');
-    $('#mascaraAJAX').fadeIn(300);
+    var url = menu.checkRelativeRoot();
+    url = url.substring(0,24);
+    if(url == "carrito_compras_catalogo") {
+        //Carga imagen ajax para carrito compras catalogo
+        showWaitLoader('mascaraAJAX');
+        $('#mascaraAJAX').fadeIn(300);
         /////////////////////////////////////////////////
         /******** Llena combobox de categorías *********/
         var cat = document.getElementById('categoria');
@@ -29,7 +31,8 @@ window.addEventListener('load',function() {
         ];
 
         //Carga la tabla cuando se actualiza el combobox
-        cat.addEventListener('change', function(){
+        cat.addEventListener('change', function(event){
+            event.target.blur();
         //Carga imagen ajax
         showWaitLoader('mascaraAJAX');
         $('#mascaraAJAX').fadeIn(300);
@@ -85,6 +88,23 @@ window.addEventListener('load',function() {
             $('#mascaraAJAX').fadeOut(300);
             $('#mascaraAJAX').html('');
         }
+
+        //////////////////////////////////
+        /****** Buscador interno ********/
+        var search = document.getElementById('search');
+        search.addEventListener('keyup', function(){
+            var buscarTr = articulos.childNodes;
+            for (var i = 0; i < buscarTr.length; i++) {
+                var encontrado = articulos.childNodes[i].childNodes[1].innerHTML.toLowerCase().indexOf(search.value.toLowerCase());
+                if(encontrado == -1) {
+                    buscarTr[i].style.display = 'none';
+                }
+                else {
+                    buscarTr[i].style.display = '';
+                }
+            }
+        },false);
+
     }//Termina carrito_compras_catalogo.html
 
 
@@ -265,7 +285,7 @@ window.addEventListener('load',function() {
                 llenarTabla +=      "<td>" + precio + "</td>";
                 llenarTabla +=      "<td>" + puntos + "</td>";
                 llenarTabla +=      "<td>" + vconsumible + "</td>";
-                llenarTabla +=      "<td>$" + total + "</td>";//total precio
+                llenarTabla +=      "<td>$" + Math.round(total*100)/100 + "</td>";//total precio
                 llenarTabla +=      "<td>" + tpuntos + "</td>";//total puntos
                 llenarTabla +=      "<td>" + tvconsumible + "</td>";//total valor consumible
                 llenarTabla +=      "<td>" + Math.round(tpeso*100)/100 + "kg.</td>";
@@ -293,21 +313,41 @@ window.addEventListener('load',function() {
         $('#mascaraAJAX').fadeIn(300);
         /////////////////////////////////////////////////////
         /************* Calcula Costo de envío **************/
-        var xml = '<PAGE><CART GRAN_TOTAL_ITEM_WEIGHT="11.5" COUNTRY_ID="4"/><SHIPPING_ADDRES SHIPPING_METHOD="2" CARRIER="3"/></PAGE>';
+        
+        //Datos de carrito_compras.html
+        var cadena = localStorage.getItem('carrito_subtotales');
+        var resArray = cadena.split('","');
+        var total_precio =      resArray[0];
+        var total_puntos =      resArray[1];
+        var total_vconsumible = resArray[2];
+        var total_peso = resArray[3];
+        //Datos de carrito_compras_levantar.html
+        var cadenaLevantar = localStorage.getItem('carrito_levantar');
+        cadenaLevantar = cadenaLevantar.split('","');
+        var metodo_envio = cadenaLevantar[0];
+        var enviar_a = cadenaLevantar[1];
+        var forma_pago = cadenaLevantar[2];
+        var carrier = 3;
+        if (metodo_envio == 2) {
+            carrier = enviar_a;
+        }
+
+        var xml = '<PAGE><CART GRAN_TOTAL_ITEM_WEIGHT="'+total_peso+'" COUNTRY_ID="4"/><SHIPPING_ADDRES SHIPPING_METHOD="'+metodo_envio+'" CARRIER="'+carrier+'"/></PAGE>';
         queryData('USP_VBC_GET_SHIPPING_COST', ['string',depurarXML(xml)], calculaEnvio);
         var costoXenvio = 0;
         function calculaEnvio(dataSet) {
             var rec = dataSet[0];
-            document.getElementById('cargo_manejo').innerHTML = '$' +rec['shippingCharge'];
-            costoXenvio = rec['shippingCharge'];
+            var cargo_manejo = document.getElementById('cargo_manejo');
+            if (rec['shippingCharge'] == null) {
+                cargo_manejo.innerHTML = 0;
+            } else {
+                cargo_manejo.innerHTML = '$' +rec['shippingCharge'];
+                costoXenvio = rec['shippingCharge'];
+            }
 
             //Despues de obtenido el costo por envío, carga los subtotales
             if (window.localStorage.getItem('carrito_subtotales')) {
-                var cadena = localStorage.getItem('carrito_subtotales');
-                var resArray = cadena.split('","');
-                var total_precio =      resArray[0];
-                var total_puntos =      resArray[1];
-                var total_vconsumible = resArray[2];
+                
                 var cadenaSubtotal = '<div style="padding:3px; border: 1px solid silver; float: left">T. Puntos: ' + total_puntos + '</div>';
                 cadenaSubtotal += '<div style="padding:3px; border: 1px solid silver; float: left">T. V. Consumible: ' + total_vconsumible + '</div>';
                 cadenaSubtotal += '<div style="padding:3px; float: right">Total: $' + total_precio + '</div>';
@@ -317,8 +357,7 @@ window.addEventListener('load',function() {
                 cadenaInpuesto = '<div style="text-align: right">$' + inpuesto + '</div>';
                 document.getElementById('impuesto').innerHTML = (cadenaInpuesto);
                 var granTotal = parseFloat(total_precio) + parseFloat(costoXenvio) + parseFloat(inpuesto);
-                Debug(granTotal);
-                document.getElementById('gran_total').innerHTML = '$' +granTotal;
+                document.getElementById('gran_total').innerHTML = '$' +Math.round(granTotal*100)/100;
             }
             else {
                 app.showNotificactionVBC('Algo salio mal al cargar los datos');
@@ -331,7 +370,6 @@ window.addEventListener('load',function() {
             showWaitLoader('dataSet');
             var rec = dataSet[0];
             var tabla = '<table>';
-            for(i = 0; i < dataSet.length; i++){
                 rec = dataSet[i];
                 tabla += '<tr>';
                 tabla += '<td class="titulos">Nombre:</td><td>' + rec['shipName'] + '</td>';
@@ -355,8 +393,16 @@ window.addEventListener('load',function() {
                 tabla += '<tr>';
                 tabla += '<td class="titulos">Instrucciones Especiales</td><td><input type="text" id="instrucciones" data-mini="true" /></td>';
                 tabla += '</tr>';
-            }
             tabla += '</table>';
+
+            if (metodo_envio == 1) {
+                queryData('USP_VBC_GET_USER_PROFILE_DATA', ['integer','12'], profileCentro);
+                function profileCentro(dataSet) {
+                    var rec = dataSet[0];
+                    Debug(rec);
+                }
+            }
+
             document.getElementById('dataSet').innerHTML = tabla;
             //Oculta imágen AJAX
             $('#mascaraAJAX').fadeOut(300);
@@ -407,10 +453,12 @@ function cerrarPedido() {
     }
     else {
         var subtotal = $('#total_precio').text();
-        subtotal = subtotal.substring(1, subtotal.length);
+            subtotal = subtotal.substring(1, subtotal.length);
         var puntos = $('#total_puntos').text();
         var vconsumible = $('#total_vconsumible').text();
-        var cadena = subtotal + "\",\"" + puntos + "\",\"" + vconsumible;
+        var total_peso = document.getElementById('total_peso').innerHTML;
+            total_peso = total_peso.substring(0, total_peso.length-4);
+        var cadena = subtotal + "\",\"" + puntos + "\",\"" + vconsumible + "\",\"" + total_peso;
         //Guarda los totales
         localStorage.setItem('carrito_subtotales', cadena);
         location.href='carrito_compras_levantar.html';
@@ -419,6 +467,12 @@ function cerrarPedido() {
 
 //////////////////////////////////////////////////
 /******** procesa artículo seleccionado *********/
+document.addEventListener('keypress',function(e) {
+    if (e.which == 13) {
+        compra(e);
+    }
+});
+
 function compra(event) {
     var idTd = document.getElementById(event.target.parentNode.id);
     var celdas = idTd.parentNode.cells;
