@@ -64,6 +64,11 @@ $(document).ready(function() {
             cadena += "\"" + paqueteria + "\",";
         }       
         cadena += "\"" + metodoPago;
+
+        //Si existe previamente ese variable local la elimina para cargarla de nuevo
+        if(localStorage.getItem('susc2Local')){
+            localStorage.removeItem('susc2Local');
+        }
         //Se almacena localmente el valor del array en una variable local
         localStorage.setItem('susc2Local' ,cadena);
     });
@@ -232,6 +237,7 @@ $(document).ready(function() {
         if(opcion == 1){
             $('#paqueteriaTr').hide(200);
             $('#centroAutorizadoTr').show(200);
+            $('#centroAutorizado').val(0);
         }else if(opcion == 2){
             $('#centroAutorizadoTr').hide(200);
             $('#paqueteriaTr').show(200);

@@ -2,6 +2,10 @@
 <html>
 <head>
 	<title>Contrato RIR</title>
+
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+
 </head>
 <body>
 	<!--Inicia cuadro de diálogo para contrato de RIRS-->
@@ -899,5 +903,13 @@
         </div>
 
     </div>
+
+    <script>
+
+        //Borra Historial del Botón back
+        if(history.forward(1))
+            location.replace(history.forward(1))
+
+    </script>
 </body>
 </html>

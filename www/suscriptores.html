@@ -124,7 +124,12 @@
     <header>
         <nav id="menu"></nav>
     </header>
+
+    <!--Mascara que se muestra cuando se abre menú-->
     <section id="mascara"></section>
+
+    <!--Macara que se muestra  mientras se cargan todos los elementos de la página-->
+    <div id="mascaraAJAX"></div>
 
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
@@ -137,6 +142,42 @@
             //El registro al servicio de google lo hacemos automáticamente
             app.initialize();            
             menu.cargarMenu();
+
+            //Carga imagen ajax
+            showWaitLoader('mascaraAJAX');
+            $('#mascaraAJAX').fadeIn(300);
+            
+            /*Devuelve conjunto de datos y carga SELECT de lenguajes con los datos obtenidos*/
+            queryData('USP_VBC_GET_LANGUAGES', ['integer', ''], fillLanguages);
+
+            function fillLanguages(dataSet){
+                var rec = dataSet[0];
+                var text = '';
+
+                for(var idx = 0; idx < dataSet.length; idx++){
+                    rec = dataSet[idx];
+                    text += '<option value="'+ rec["code"] +'">'+ rec["name"] +'</option>';
+                    console.log(text);
+                };
+
+                //oculta imagen ajax
+                $('#mascaraAJAX').fadeOut(300);
+                $('#mascaraAJAX').html('');  
+
+                $('#lenguaje').html(text);
+
+                var extraer = localStorage.getItem("susc1Local");
+                var array = extraer.split('","');
+
+                $('#lenguaje').val(array[0]);                          
+            }
+
+            //Se quita el foco al SELECT de lenguaje
+            $('#lenguaje').change(function(event) {
+                /* Act on the event */
+                event.target.blur();
+            });
+            
 
             //Verifica si las variables locales existen para lanzar cuandro de confirmación 
             if(localStorage.getItem('susc1Local') || localStorage.getItem('susc2Local') || localStorage.getItem('susc3Local') ||
@@ -164,26 +205,6 @@
             }
 
 
-            /*Devuelve conjunto de datos y carga SELECT de lenguajes con los datos obtenidos*/
-            queryData('USP_VBC_GET_LANGUAGES', ['integer', ''], fillLanguages);
-
-            function fillLanguages(dataSet){
-                var rec = dataSet[0];
-                var text = '';
-
-                for(var idx = 0; idx < dataSet.length; idx++){
-                    rec = dataSet[idx];
-                    text += '<option value="'+ rec["code"] +'">'+ rec["name"] +'</option>';
-                    console.log(text);
-                };
-
-                $('#lenguaje').html(text);
-
-                var extraer = localStorage.getItem("susc1Local");
-                var array = extraer.split('","');
-
-                $('#lenguaje').val(array[0]);            
-            }
 
             /*Añade datos de patrocinador provenientes de las variables locales*/
             var usernameLocal = localStorage.getItem("usernameLocal");
