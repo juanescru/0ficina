@@ -7,6 +7,9 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=no">
 
+        <meta http-equiv="Expires" content="0" />
+        <meta http-equiv="Pragma" content="no-cache" />
+
         <link rel="stylesheet" href="css/styleSuscriptores.css" />
         <link rel="stylesheet" type="text/css" href="css/styleMenu.css">
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">               
@@ -50,9 +53,9 @@
                             <tr>
                                 <th>Nombre(s) Apellido(s):</th>
                                 <td>
-                                    <input type="text" name="txtNombre" id="txtNombre" placeholder="Nombre(s)">
-                                    <input type="text" name="txtApePat" id="txtApePat" placeholder="Apellido Materno">
-                                    <input type="text" name="txtApeMat" id="txtApeMat" placeholder="Apellido Paterno">
+                                    <input type="text" name="txtNombre" id="txtNombre" placeholder="Nombre(s)"><br>
+                                    <input type="text" name="txtApePat" id="txtApePat" placeholder="Apellido Paterno"><br>
+                                    <input type="text" name="txtApeMat" id="txtApeMat" placeholder="Apellido Materno"><br>
                                 </td>    
                             </tr>
                             <tr>
@@ -119,7 +122,7 @@
                                 <th>Centro Autorizado:</th>
                                 <td id="tdCentroAutorizado">
                                     <select  name="centroAutorizado" id="centroAutorizado">
-                                        <option>Seleccione</option>
+                                        <option value="0">Seleccione</option>
                                     </select>
                                     <a style="background:rgba(8,124,205,1) !important; color: rgba(255,255,255,.8); font-size:8px;padding:1.5px;"  id="btnDireccion">Dirección ></a>
                                 </td>    
@@ -167,7 +170,12 @@
     <header>
         <nav id="menu"></nav>
     </header>
+
+    <!--Mascara que se muestra cuando se abre menú-->
     <section id="mascara"></section>
+
+    <!--Macara que se muestra  mientras se cargan todos los elementos de la página-->
+    <div id="mascaraAJAX"></div>
 
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
@@ -184,6 +192,10 @@
             //El registro al servicio de google lo hacemos automáticamente
             app.initialize();            
             menu.cargarMenu(); 
+
+            //Borra Historial del Botón back
+            if(history.forward(1))
+                location.replace(history.forward(1));
                     
             //Carga combo días
             fillDay();

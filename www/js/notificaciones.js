@@ -131,7 +131,7 @@ var app = {
 
     // Handle the back button
     //
-    onBackKeyDown: function() {
+    onBackKeyDown: function(event) {
         if(localStorage.getItem("menuStatus") == 1){
             $('#showMenu').trigger('click');
         }else{
@@ -139,9 +139,12 @@ var app = {
                 app.showConfirm(); return false;
             }else if(app.checkRelativeRoot() == 2){
                 app.showConfirmRootWelcome(); return false;
-            }
-            else if(app.checkRelativeRoot() == 3){
+            }else if(app.checkRelativeRoot() == 3){
                 history.back();
+            }else if(app.checkRelativeRoot() == 10){
+                event.preventDefault();
+            }else if(app.checkRelativeRoot() == 11){
+                window.location.href = "welcome.html";
             }
         }
     },
@@ -158,6 +161,10 @@ var app = {
             numero = 1;
         }else if(rutaRelativa == "welcome.html"){
             numero = 2;
+        }else if(rutaRelativa == "suscriptores2.html" || rutaRelativa == "suscriptores3.html" || rutaRelativa == "suscriptores4.html" || rutaRelativa == "suscriptores5.html" || rutaRelativa == "cuadroDialogoDireccion.html" || rutaRelativa == "cuadroDialogoContrato.html"){
+            numero = 10;
+        }else if(rutaRelativa == "suscriptores.html"){
+            numero = 11;
         }else{
             numero = 3;
         } return numero;

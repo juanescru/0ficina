@@ -154,7 +154,7 @@
                     alert(resp.getAttribute('message'));
                 }
                 //TODO:Implementar el codigo propio de la aplicación
-            } else alert('Fallo en la ejecución del método');
+            } else /*alert('Fallo en la ejecución del método');*/  console.log("Fallo en la ejecución del método");
         });
         // Agregamos el namespace base
         // Agregamos las credenciales de acceso

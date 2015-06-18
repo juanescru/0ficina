@@ -7,6 +7,9 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximun-scale=no">
 
+        <meta http-equiv="Expires" content="0" />
+        <meta http-equiv="Pragma" content="no-cache" />
+
         <link rel="stylesheet" href="css/styleSuscriptores.css" />
         <link rel="stylesheet" type="text/css" href="css/styleMenu.css">
         <link rel="stylesheet" type="text/css" href="fonts/fonts.css">               
@@ -87,7 +90,12 @@
     <header>
         <nav id="menu"></nav>
     </header>
+
+    <!--Mascara que se muestra cuando se abre menú-->
     <section id="mascara"></section>
+
+    <!--Macara que se muestra  mientras se cargan todos los elementos de la página-->
+    <div id="mascaraAJAX"></div>
     
 
     <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
@@ -103,9 +111,18 @@
     <script type="text/javascript"> 
             //El registro al servicio de google lo hacemos automáticamente
             app.initialize();            
-            menu.cargarMenu();
+            menu.cargarMenu();            
+
+            //Borra Historial del Botón back
+            if(history.forward(1))
+                location.replace(history.forward(1));
             
             function validateFields(){
+
+                //Carga imagen ajax
+                showWaitLoader('mascaraAJAX');
+                $('#mascaraAJAX').fadeIn(300);
+
                 if(ValidaCamposVacios3()){
                     var alias = $('#txtAlias').val();
                     /*Devuelve '0' si el alias no está disponible y 1 si aún no está siendo utilizado por otro usuario*/
@@ -114,13 +131,21 @@
                     function getIsAvailable(dataSet){
                         var rec = dataSet[0];
 
+
                         if(rec['isAvailable'] == 0){
-                            alert('El Alias que usted ha ingresado ya es utiliado por otro usuario, elija otro');
+                            app.showNotificactionVBC('El Alias que usted ha ingresado ya es utiliado por otro usuario, elija otro');
                         }else if(rec['isAvailable'] == 1){
                             window.location.href = "suscriptores5.html";
                         }
-                    }  
-                }
+                        //oculta imagen ajax
+                        $('#mascaraAJAX').fadeOut(300);
+                        $('#mascaraAJAX').html(''); 
+                    }                    
+                }else{
+                    //oculta imagen ajax
+                    $('#mascaraAJAX').fadeOut(300);
+                    $('#mascaraAJAX').html(''); 
+                }              
             }
             
 
